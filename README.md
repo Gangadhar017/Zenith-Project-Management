@@ -36,22 +36,22 @@ We recently rolled out key system-wide visual, architectural, and functional enh
 
 ```mermaid
 graph TD
-    A[Zenith Platform] --> B[Enterprise App Client]
-    A --> C[High-Performance Server]
-    A --> D[Gemini AI Engine]
+    A["Zenith Platform"] --> B["Enterprise App Client"]
+    A --> C["High-Performance Server"]
+    A --> D["Gemini AI Engine"]
     
-    B --> B1[Next.js 15 App Router (React JS)]
-    B --> B2[Zustand Stores & Themes]
-    B --> B3[Socket.io Cursors & Typing]
+    B --> B1["Next.js 15 App Router (React JS)"]
+    B --> B2["Zustand Stores & Themes"]
+    B --> B3["Socket.io Cursors & Typing"]
     
-    C --> C1[Express & JWT Auth Router]
-    C --> C2[Prisma schema with Neon Postgres]
-    C --> C3[Presence Rooms Synchronization]
+    C --> C1["Express & JWT Auth Router"]
+    C --> C2["Prisma Schema with Neon Postgres"]
+    C --> C3["Presence Rooms Synchronization"]
     
-    D --> D1[Prompt-to-Tasks Wizard]
-    D --> D2[AI Sprints Optimizer]
-    D --> D3[Gemini Code Bug Solver]
-    D --> D4[Workspace Chat Sidebar]
+    D --> D1["Prompt-to-Tasks Wizard"]
+    D --> D2["AI Sprints Optimizer"]
+    D --> D3["Gemini Code Bug Solver"]
+    D --> D4["Workspace Chat Sidebar"]
 ```
 
 ### 1. Unified Sessional Auth & RBAC
