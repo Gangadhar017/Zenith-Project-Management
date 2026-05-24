@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: zenith-db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: zenith
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  backend:
+    build: ./backend
+    container_name: zenith-backend
+    restart: always
+    ports:
+      - "8000:8000"
+    environment:
+      - PORT=8000
+      - DATABASE_URL=postgresql://neondb_owner:npg_aI4PwX1meKkA@ep-hidden-sea-aplzsnp7.c-7.us-east-1.aws.neon.tech/neondb?sslmode=require
+      - JWT_SECRET=super-secret-zenith-jwt-key-2026-wow
+      - GEMINI_API_KEY=
+      - RESEND_API_KEY=
+      - CORS_ORIGIN=http://localhost:3000
+    depends_on:
+      - db
+
+  frontend:
+    build: ./frontend
+    container_name: zenith-frontend
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8000/api
+      - NEXT_PUBLIC_SOCKET_URL=http://localhost:8000
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
