@@ -44,8 +44,50 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     selectWorkspace,
     createWorkspace,
     createProject,
-    selectProject
+    selectProject,
+    tasks
   } = useWorkspaceStore();
+
+  // Global Search states
+  const [globalSearchQuery, setGlobalSearchQuery] = useState('');
+  const [showSearchResults, setShowSearchResults] = useState(false);
+
+  // Focus search input on Ctrl/Cmd + K
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        const searchInput = document.querySelector('input[placeholder="Search workspace..."]') as HTMLInputElement;
+        if (searchInput) {
+          searchInput.focus();
+        }
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
+  // Clear currentProject when navigating to non-project pages
+  useEffect(() => {
+    if (pathname && !pathname.includes('/project/')) {
+      useWorkspaceStore.setState({ currentProject: null });
+    }
+  }, [pathname]);
+
+  // Filter projects and tasks in real-time
+  const matchedProjects = globalSearchQuery 
+    ? projects.filter(p => 
+        p.name.toLowerCase().includes(globalSearchQuery.toLowerCase()) || 
+        (p.description || '').toLowerCase().includes(globalSearchQuery.toLowerCase())
+      )
+    : [];
+
+  const matchedTasks = globalSearchQuery
+    ? tasks.filter(t => 
+        t.title.toLowerCase().includes(globalSearchQuery.toLowerCase()) || 
+        (t.description || '').toLowerCase().includes(globalSearchQuery.toLowerCase())
+      )
+    : [];
 
   // Clerk Account Modal Custom Overlay States
   const [showClerkModal, setShowClerkModal] = useState(false);
@@ -345,9 +387,25 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
             {/* Breadcrumb Info */}
             <div className="hidden sm:flex items-center gap-2 text-xs font-medium">
-              <Link href="/dashboard" className="text-zinc-500 hover:text-foreground transition">Workspace</Link>
+              <Link 
+                href="/dashboard" 
+                onClick={() => {
+                  useWorkspaceStore.setState({ currentProject: null });
+                }}
+                className="text-zinc-500 hover:text-foreground transition"
+              >
+                Workspace
+              </Link>
               <ChevronRight className="h-3.5 w-3.5 text-zinc-500" />
-              <Link href="/dashboard" className="text-zinc-400 hover:text-foreground transition">{currentWorkspace?.name || 'Loading...'}</Link>
+              <Link 
+                href="/dashboard" 
+                onClick={() => {
+                  useWorkspaceStore.setState({ currentProject: null });
+                }}
+                className="text-zinc-400 hover:text-foreground transition"
+              >
+                {currentWorkspace?.name || 'Loading...'}
+              </Link>
               
               {currentProject && (
                 <>
@@ -361,8 +419,81 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           <div className="flex items-center gap-4">
             
             {/* Quick Command Palette Indicator */}
-            <div className="hidden lg:flex items-center gap-2 bg-card border border-card-border px-3 py-1.5 rounded-lg text-[10px] text-zinc-500 font-medium">
-              <Search className="h-3.5 w-3.5" /> Search workspace <kbd className="bg-zinc-800/20 dark:bg-zinc-800 px-1 rounded text-zinc-400">⌘K</kbd>
+            <div className="relative hidden lg:block w-64">
+              <Search className="absolute left-3 top-2.5 h-3.5 w-3.5 text-zinc-500" />
+              <input 
+                type="text"
+                placeholder="Search workspace..."
+                value={globalSearchQuery}
+                onChange={(e) => {
+                  setGlobalSearchQuery(e.target.value);
+                  setShowSearchResults(true);
+                }}
+                onFocus={() => setShowSearchResults(true)}
+                className="w-full bg-card border border-card-border pl-9 pr-12 py-1.5 rounded-lg text-xs focus:outline-none focus:border-primary/50 text-foreground transition-all duration-200"
+              />
+              <kbd className="absolute right-2 top-2 bg-zinc-800/20 dark:bg-zinc-800 px-1 rounded text-zinc-400 text-[9px] pointer-events-none">⌘K</kbd>
+              
+              {showSearchResults && globalSearchQuery && (
+                <>
+                  <div className="fixed inset-0 z-40" onClick={() => setShowSearchResults(false)} />
+                  <div className="absolute right-0 top-10 w-80 bg-card border border-card-border rounded-xl shadow-xl z-50 p-3 max-h-96 overflow-y-auto glass-panel">
+                    <div className="text-[10px] font-bold text-zinc-500 tracking-wider mb-2">SEARCH RESULTS</div>
+                    
+                    {/* Projects Section */}
+                    {matchedProjects.length > 0 && (
+                      <div className="mb-4">
+                        <div className="text-[9px] font-black text-zinc-400 uppercase mb-1">Projects ({matchedProjects.length})</div>
+                        <div className="flex flex-col gap-1">
+                          {matchedProjects.map(p => (
+                            <button
+                              key={p.id}
+                              onClick={async () => {
+                                await selectProject(p.id);
+                                setShowSearchResults(false);
+                                setGlobalSearchQuery('');
+                                router.push(`/workspace/${currentWorkspace?.id}/project/${p.id}`);
+                              }}
+                              className="w-full text-left px-2 py-1.5 rounded-lg hover:bg-white/5 text-xs text-foreground font-semibold flex items-center justify-between group transition"
+                            >
+                              <span className="truncate group-hover:text-primary transition">{p.name}</span>
+                              <span className="text-[8px] bg-primary/10 text-primary border border-primary/20 px-1.5 py-0.2 rounded font-bold uppercase scale-90">BOARD</span>
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Tasks Section */}
+                    {matchedTasks.length > 0 && (
+                      <div>
+                        <div className="text-[9px] font-black text-zinc-400 uppercase mb-1">Tasks ({matchedTasks.length})</div>
+                        <div className="flex flex-col gap-1">
+                          {matchedTasks.map(t => (
+                            <button
+                              key={t.id}
+                              onClick={async () => {
+                                await selectProject(t.projectId);
+                                setShowSearchResults(false);
+                                setGlobalSearchQuery('');
+                                router.push(`/workspace/${currentWorkspace?.id}/project/${t.projectId}`);
+                              }}
+                              className="w-full text-left px-2 py-1.5 rounded-lg hover:bg-white/5 text-xs text-foreground font-semibold flex items-center justify-between group transition"
+                            >
+                              <span className="truncate group-hover:text-primary transition">{t.title}</span>
+                              <span className="text-[8px] bg-secondary/10 text-secondary border border-secondary/20 px-1.5 py-0.2 rounded font-bold uppercase scale-90">{t.status}</span>
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {matchedProjects.length === 0 && matchedTasks.length === 0 && (
+                      <div className="text-xs text-zinc-500 italic text-center py-4">No results found inside workspace.</div>
+                    )}
+                  </div>
+                </>
+              )}
             </div>
 
             {/* Project Selector top header */}
