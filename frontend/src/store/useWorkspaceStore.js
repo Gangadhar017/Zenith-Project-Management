@@ -18,6 +18,7 @@ export const useWorkspaceStore = create((set, get) => {
     projects: [],
     currentProject: null,
     tasks: [],
+    allTasks: [],
     documents: [],
     isLoading: false,
 
@@ -33,8 +34,9 @@ export const useWorkspaceStore = create((set, get) => {
           if (data.length > 0 && !get().currentWorkspace) {
             const ws = data[0];
             set({ currentWorkspace: ws });
-            get().fetchProjects(ws.id);
+            await get().fetchProjects(ws.id);
             get().fetchDocuments(ws.id);
+            get().fetchAllWorkspaceTasks();
           }
         }
       } catch (err) {
@@ -44,15 +46,17 @@ export const useWorkspaceStore = create((set, get) => {
       }
     },
 
-    selectWorkspace: (workspace) => {
+    selectWorkspace: async (workspace) => {
       set({
         currentWorkspace: workspace,
         projects: [],
         currentProject: null,
         tasks: [],
+        allTasks: [],
       });
-      get().fetchProjects(workspace.id);
+      await get().fetchProjects(workspace.id);
       get().fetchDocuments(workspace.id);
+      get().fetchAllWorkspaceTasks();
     },
 
     createWorkspace: async (name, description) => {
@@ -82,6 +86,26 @@ export const useWorkspaceStore = create((set, get) => {
         }
       } catch (err) {
         console.error("Fetch projects failed:", err);
+      }
+    },
+
+    fetchAllWorkspaceTasks: async () => {
+      try {
+        const currentProjects = get().projects;
+        if (!currentProjects || currentProjects.length === 0) return;
+        const taskArrays = await Promise.all(
+          currentProjects.map((p) =>
+            fetch(`${API_BASE}/projects/${p.id}`, { headers: getHeaders() })
+              .then((res) => res.json())
+              .then((data) =>
+                (data.tasks || []).map((t) => ({ ...t, projectId: p.id, projectName: p.name }))
+              )
+              .catch(() => [])
+          )
+        );
+        set({ allTasks: taskArrays.flat() });
+      } catch (err) {
+        console.error("Fetch all workspace tasks failed:", err);
       }
     },
 
@@ -157,6 +181,7 @@ export const useWorkspaceStore = create((set, get) => {
         });
         if (res.ok && get().currentProject) {
           await get().fetchTasks(get().currentProject.id);
+          get().fetchAllWorkspaceTasks();
         }
       } catch (err) {
         console.error("Create task failed:", err);
@@ -200,6 +225,7 @@ export const useWorkspaceStore = create((set, get) => {
         });
         if (res.ok && get().currentProject) {
           await get().fetchTasks(get().currentProject.id);
+          get().fetchAllWorkspaceTasks();
         }
       } catch (err) {
         console.error("Delete task failed:", err);
