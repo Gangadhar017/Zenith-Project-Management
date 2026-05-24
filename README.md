@@ -1,141 +1,234 @@
-# Zenith - Enterprise-Grade AI-Powered Project Management SaaS Platform
+# <div align="center">🌌 Zenith PM</div>
+## <div align="center">Next-Generation AI-Powered Enterprise Project Management Platform</div>
 
-Zenith is a premium, high-velocity, dark-mode-first Silicon Valley style agile project management platform designed to perform better than Jira, Trello, and ClickUp. It pairs a beautiful glassmorphic Next.js 15 App Router frontend with a robust Node/Express/Socket.io backend, unified database schema maps via Prisma, and **11 distinct context-aware Gemini AI modules**.
+<div align="center">
 
----
+[![Next.js Version](https://img.shields.io/badge/Next.js-15.1.7-black?style=for-the-badge&logo=next.js)](https://nextjs.org)
+[![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-3.4-blue?style=for-the-badge&logo=tailwind-css)](https://tailwindcss.com)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org)
+[![Prisma ORM](https://img.shields.io/badge/Prisma_ORM-6.x-teal?style=for-the-badge&logo=prisma)](https://prisma.io)
+[![Docker Support](https://img.shields.io/badge/Docker-Compatible-blue?style=for-the-badge&logo=docker)](https://www.docker.com)
+[![Google Gemini](https://img.shields.io/badge/Google_Gemini-Armed-purple?style=for-the-badge&logo=google-gemini)](https://deepmind.google/technologies/gemini/)
 
-## 🌟 Key Features
-
-1. **Authentication & Multi-Tenancy**: Standard credentials register/login secure sessions utilizing HTTP-only JWTs, mapping custom profile images, workspaces allocations, and role-based memberships (OWNER, ADMIN, MEMBER, VIEWER).
-2. **Dynamic Kanban Board**: Infinite scroll, drag-and-drop status lane changes (`BACKLOG`, `TODO`, `IN_PROGRESS`, `IN_REVIEW`, `DONE`) featuring **optimistic UI updates** for instant client-side card changes.
-3. **Socket.io Synchronization**: Instant multi-user collaborative sync, display active typing indicators inside card comments, and coordinate live presence cursors.
-4. **Agile Sprints Planner**: Schedule backlog points capacity workloads dynamically.
-5. **Knowledge Wikis Doc Tool**: Share corporate resources and team guides inside Markdown text pages.
-6. **11 Gemini AI Suite Modules**:
-   - **Prompt-to-Tasks**: Type simple requirements (e.g. "Create NextJS auth routes") and auto-create structured tasks with sub-checklists.
-   - **Sprint Planning**: Allocate capacity priorities dynamically.
-   - **AI Project Summary**: Executives overview metrics reports.
-   - **Meeting Summarizer**: Convert raw text video standup transcripts directly into backlog action cards.
-   - **Risk Shield Detection**: Scans deadline overlaps and bottlenecks.
-   - **Productivity Insights**: Personal efficiency scorecard advice.
-   - **AI Bug Solver**: Draft proposed root-causes and actual code fixes for bug tasks.
-   - **Deadline Predictor**: Sprint completion dates estimations.
-   - **Smart Assign**: Auto-recommend assignees matching task skill tags.
-   - **Daily Standup**: Aggregates what you did yesterday, today, and blockers.
-   - **Workspace Chatbot Sidebar**: A persistent workspace brain answering queries about boards.
+</div>
 
 ---
 
-## 📂 Project Structure
+### 📖 Introduction
+
+**Zenith** is a high-fidelity, high-velocity agile project management SaaS platform built for high-performance engineering teams. Engineered to outperform legacy task trackers, Zenith pairs a sleek, modern glassmorphic theme with a high-performance **Node.js/Express/TypeScript** backend, real-time collaboration engines powered by **Socket.io**, and **11 context-aware Gemini AI models** that act as cooperative digital teammates.
+
+---
+
+## 🚀 Recent Core Advancements
+
+We recently rolled out key system-wide visual and architectural enhancements to Zenith's core layout:
+
+*   **Reactive Class-Based Dark Mode theme**: Built a robust dark-theme first layout. The workspace store (`useAuthStore`) seamlessly caches user preference within local storage and defaults to a gorgeous dark zinc/indigo theme (`#09090b` carbon) for first-time visitors, completely eliminating visual contrast and white-on-white text bugs.
+*   **Fully Functional Autocomplete Workspace Search**: Upgraded the static command-palette mockup with a fully operational real-time search engine inside the top header. Pressing `⌘K` or `Ctrl+K` instantly focuses the bar, searching all Projects and Tasks in the active workspace and linking directly to target boards.
+*   **Breadcrumbs Navigation backlinks Reset**: Integrated direct State Purge controllers into the top-header breadcrumb list. Navigating back to the `Workspace` or the Workspace name breadcrumbs clears the project selector state dynamically, preventing stale project sub-headers on workspace-level pages like the Calendar, Wikis, or Team tables.
+
+---
+
+## ✨ Primary Features Matrix
+
+```mermaid
+graph TD
+    A[Zenith Platform] --> B[Enterprise App Client]
+    A --> C[High-Performance Server]
+    A --> D[Gemini AI Engine]
+    
+    B --> B1[Next.js 15 App Router]
+    B --> B2[Zustand Stores & Themes]
+    B --> B3[Socket.io Cursors & Typing]
+    
+    C --> C1[Express & JWT Auth Router]
+    C --> C2[Prisma schema with Neon Postgres]
+    C --> C3[Presence Rooms Synchronization]
+    
+    D --> D1[Prompt-to-Tasks Wizard]
+    D --> D2[AI Sprints Optimizer]
+    D --> D3[Gemini Code Bug Solver]
+    D --> D4[Workspace Chat Sidebar]
+```
+
+### 1. Unified Sessional Auth & RBAC
+- Secure JWT credential registers and cookie/header-based authorization.
+- Automatic personal workspace provisioning.
+- Precise Role-Based Access Controls: `OWNER`, `ADMIN`, `MEMBER`, and `VIEWER`.
+
+### 2. High-Performance Kanban Board
+- Zero-latency card drag-and-drops across columns (`BACKLOG`, `TODO`, `IN_PROGRESS`, `IN_REVIEW`, `DONE`).
+- **Optimistic UI Updates** in Zustand stores reflect on-screen state modifications instantly.
+- Integrated task timers (Pomodoro clocks) logging deep focus metrics directly into the database.
+
+### 3. Real-Time Collaboration Core
+- Presence engines track and render mouse cursors coordinates of all active workspace developers.
+- typing animations display indicators inside task comment boxes when teams are writing.
+- Instant, multi-client board layout updates via global Socket.io event triggers.
+
+### 4. 11 Gemini AI Suite Modules
+*   **Prompt-to-Tasks**: Converts descriptive natural language requests into structured checklists and tickets.
+*   **Sprint Planning Optimizer**: Analyzes backlog queues, estimates team capacities, and proposes optimized sprint allocations.
+*   **Meeting Summarizer**: Processes raw video or standup transcripts into actionable backlog tickets.
+*   **Risk Shield Detection**: Flags potential schedule bottlenecks, task overlaps, and capacity overloads.
+*   **AI Bug Solver**: Scans bug ticket logs, drafts possible root causes, and outputs proposed code solutions.
+*   **Workspace Chatbot Sidebar**: A persistent virtual teammate sidebar that answers queries regarding active tickets, workspace documents, and project details.
+
+---
+
+## 📂 Repository Layout
 
 ```
 d:/Project_Management/
-├── frontend/                  # Next.js 15 App Router Frontend
+├── frontend/                  # Next.js 15 App Router Frontend client
 │   ├── src/
-│   │   ├── app/               # Pages & Views (Landing, Dashboard, Board, Wikis, Sprints)
-│   │   ├── components/        # Glassmorphic UI containers
-│   │   ├── store/             # Zustand state managers (Auth, Workspaces, Sockets)
-│   │   └── lib/               # Utility functions
+│   │   ├── app/               # Workspace Pages, Calendars, Wikis, Sprints, Profile Settings
+│   │   ├── components/        # Glassmorphic layouts, buttons, modals, input elements
+│   │   ├── store/             # Zustand state managers (useAuthStore, useWorkspaceStore, useSocketStore)
+│   │   └── lib/               # Global utility scripts
+│   ├── tailwind.config.js     # Custom animations, HSL themes, and gradients
 │   └── package.json
-└── backend/                   # Express TypeScript Sockets Backend
+└── backend/                   # Express TypeScript Sockets API Server
     ├── src/
-    │   ├── controllers/       # Route request handlers
-    │   ├── middlewares/       # JWT Auth RBAC security
-    │   ├── routes/            # Unified api router
-    │   ├── services/          # Gemini AI API services
-    │   ├── sockets/           # Presence cursors & typing sync
-    │   └── server.ts          # Express launcher
+    │   ├── controllers/       # HTTP request parsers
+    │   ├── middlewares/       # Security filters (JWT validation, roles authentication)
+    │   ├── routes/            # Unified API endpoint schema mapper
+    │   ├── services/          # Google Gemini AI services wrapper
+    │   ├── sockets/           # Collaborative pointer & cursor synchronization
+    │   └── server.ts          # Server entrypoint file
     ├── prisma/
-    │   ├── schema.prisma      # Prisma Postgres Schema
-    │   └── seed.ts            # Seeding scripts
+    │   ├── schema.prisma      # Unified Prisma schemas (PostgreSQL / Neon compatible)
+    │   └── seed.ts            # RBAC Roles & developers database seed script
     └── package.json
 ```
 
 ---
 
-## 🚀 Execution & Setup Guide
+## 🚀 Setting Up the Suite
 
-### Method A: Docker Multi-Container Compose (Recommended)
-Launch Postgres, Express Backend, and Next.js Frontend with one command:
+### Method A: One-Click Docker Multicontainer Compose (Recommended)
+You can orchestrate the entire database, TypeScript backend, and Next.js client environment instantly using Docker:
 ```bash
-# From root directory (d:/Project_Management)
-docker-compose up --build
+# Launch database, backend API, and frontend client concurrently
+docker-compose up --build -d
 ```
-- Frontend: `http://localhost:3000`
-- Express API: `http://localhost:8000/api`
+*   **Next.js Frontend Client**: `http://localhost:3000`
+*   **Express API Server**: `http://localhost:8000/api`
 
 ---
 
-### Method B: Manual Local Development
+### Method B: Manual Local Development Setup
 
-#### 1. Setup Postgres Database
-Ensure PostgreSQL is running locally, and create a database named `zenith`.
+#### 1. Setup PostgreSQL Database
+Ensure you have a running PostgreSQL instance and provision a clean database (e.g. `zenith`).
 
-#### 2. Configure Backend
+#### 2. Configure & Start Express API Server
 ```bash
 cd backend
 npm install
 ```
+
 Create a `backend/.env` file:
 ```env
 PORT=8000
 DATABASE_URL="postgresql://postgres:YOUR_PASSWORD@localhost:5432/zenith?schema=public"
 JWT_SECRET="super-secret-zenith-jwt-key-2026-wow"
-GEMINI_API_KEY="YOUR_GOOGLE_GEMINI_API_KEY" # Optional: beautiful fallbacks included!
+GEMINI_API_KEY="YOUR_GOOGLE_GEMINI_API_KEY" # Optional: high-fidelity mock fallbacks included!
 CORS_ORIGIN="http://localhost:3000"
 ```
 
-Sync Database Schemas and Seed Records:
+Sync PostgreSQL tables and seed starting workspace profiles:
 ```bash
-# Push schema migrations
+# Run schema migration pushes
 npx prisma db push
 
-# Load sample workspaces, active sprints, backlog cards, and Wikis
+# Load sample workspaces, team members, backlog cards, and Wikis
 npm run seed
 ```
 
-Start Development API Server:
+Start the TypeScript development server:
 ```bash
 npm run dev
 ```
 
-#### 3. Configure Frontend
+#### 3. Configure & Start Next.js Client
 ```bash
 cd ../frontend
 npm install
 ```
-Start Development Next.js Hub:
+
+Start the Next.js App Router client in dev mode:
 ```bash
 npm run dev
 ```
-Open `http://localhost:3000` inside your browser!
+Open `http://localhost:3000` in your web browser.
 
 ---
 
-## 🔐 Credentials for Instantly Seeding Onboarding
-Use the seeded credentials to test the platform instantly:
-- **Lead Developer Session**:
-  - Email: `lead@zenith.com`
-  - Password: `password123`
-- **Associate Developer Session**:
-  - Email: `developer@zenith.com`
-  - Password: `password123`
+## 🔐 Seeded Credentials for Quick Access
+Zenith's seed engine preloads workspace profiles to facilitate testing out of the box:
+
+*   **Lead Architect / Admin Session**:
+    *   **Email**: `lead@zenith.com`
+    *   **Password**: `password123`
+*   **Developer / Member Session**:
+    *   **Email**: `developer@zenith.com`
+    *   **Password**: `password123`
 
 ---
 
-## 📝 Express API Schema Reference
+## 📝 Primary API Router Index
 
-| HTTP Method | Route Endpoint | Purpose |
+<details>
+<summary>🔑 Authentication Routes</summary>
+
+| Method | Endpoint | Description |
 | :--- | :--- | :--- |
-| **POST** | `/api/auth/register` | Create user profile & default personal workspace |
-| **POST** | `/api/auth/login` | Secure JWT sessional login |
-| **POST** | `/api/workspaces` | Provision tenant workspace group |
-| **GET** | `/api/workspaces/:workspaceId/stats` | Calculate project health & statistics |
-| **POST** | `/api/projects` | Provision project scrum task board |
-| **POST** | `/api/tasks` | Create Kanban card with order sorting |
-| **PUT** | `/api/tasks/:taskId` | Save drag-and-drop status changes |
-| **POST** | `/api/tasks/:taskId/comments` | Post comments inside chat streams |
-| **POST** | `/api/tasks/:taskId/timer` | Log Pomodoro deep focus session duration |
-| **POST** | `/api/ai/optimize-sprint` | Optimize sprint Backlog workloads with AI |
-| **POST** | `/api/ai/solve-bug` | Suggest bug proposed root-causes and code fixes |
-| **POST** | `/api/ai/chatbot` | PERSISTENT chat with workspace context |
+| `POST` | `/api/auth/register` | Register profile & auto-provision default workspace |
+| `POST` | `/api/auth/login` | Log in and issue HTTP sessional JWT |
+| `PUT` | `/api/auth/profile` | Update profile information (Clerk-style details modal sync) |
+
+</details>
+
+<details>
+<summary>🏢 Workspace & Project Routes</summary>
+
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| `POST` | `/api/workspaces` | Create dynamic organization tenant |
+| `GET` | `/api/workspaces/:workspaceId/stats` | Fetch real-time metrics & health indexes |
+| `POST` | `/api/projects` | Provision project scrum task board |
+| `PUT` | `/api/projects/:projectId` | Toggle project starring state |
+
+</details>
+
+<details>
+<summary>📋 Task & Kanban Card Routes</summary>
+
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| `POST` | `/api/tasks` | Create backlog cards with order sorting |
+| `PUT` | `/api/tasks/:taskId` | Save drag-and-drop column changes and coordinates |
+| `POST` | `/api/tasks/:taskId/comments` | Post comments inside chat streams |
+| `POST` | `/api/tasks/:taskId/timer` | Log Pomodoro deep focus session duration |
+
+</details>
+
+<details>
+<summary>🧠 Google Gemini AI Services</summary>
+
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| `POST` | `/api/ai/optimize-sprint` | Run Sprint capacity Optimizer planner |
+| `POST` | `/api/ai/solve-bug` | Suggest bug proposed root-causes and actual code fixes |
+| `POST` | `/api/ai/smart-assign` | Suggest optimal developer assignee for task tags |
+| `POST` | `/api/ai/chatbot` | Conversational interface with context-aware workspace memory |
+
+</details>
+
+---
+
+<div align="center">
+  <sub>Built with ❤️ by Silicon Valley Agile Engineers. Powered by Google Gemini.</sub>
+</div>
