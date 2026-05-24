@@ -4,8 +4,9 @@
 <div align="center">
 
 [![Next.js Version](https://img.shields.io/badge/Next.js-15.1.7-black?style=for-the-badge&logo=next.js)](https://nextjs.org)
+[![React JS](https://img.shields.io/badge/React_JS-JavaScript/JSX-blue?style=for-the-badge&logo=react)](https://react.dev)
 [![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-3.4-blue?style=for-the-badge&logo=tailwind-css)](https://tailwindcss.com)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org)
+[![TypeScript (Backend)](https://img.shields.io/badge/TypeScript-(Backend)-blue?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org)
 [![Prisma ORM](https://img.shields.io/badge/Prisma_ORM-6.x-teal?style=for-the-badge&logo=prisma)](https://prisma.io)
 [![Docker Support](https://img.shields.io/badge/Docker-Compatible-blue?style=for-the-badge&logo=docker)](https://www.docker.com)
 [![Google Gemini](https://img.shields.io/badge/Google_Gemini-Armed-purple?style=for-the-badge&logo=google-gemini)](https://deepmind.google/technologies/gemini/)
@@ -16,14 +17,15 @@
 
 ### 📖 Introduction
 
-**Zenith** is a high-fidelity, high-velocity agile project management SaaS platform built for high-performance engineering teams. Engineered to outperform legacy task trackers, Zenith pairs a sleek, modern glassmorphic theme with a high-performance **Node.js/Express/TypeScript** backend, real-time collaboration engines powered by **Socket.io**, and **11 context-aware Gemini AI models** that act as cooperative digital teammates.
+**Zenith** is a high-fidelity, high-velocity agile project management SaaS platform built for high-performance engineering teams. Engineered to outperform legacy task trackers, Zenith pairs a sleek, modern glassmorphic **Next.js 15 React JS (JavaScript/JSX)** frontend with a high-performance **Node.js/Express/TypeScript** backend, real-time collaboration engines powered by **Socket.io**, and **11 context-aware Gemini AI models** that act as cooperative digital teammates.
 
 ---
 
 ## 🚀 Recent Core Advancements
 
-We recently rolled out key system-wide visual and architectural enhancements to Zenith's core layout:
+We recently rolled out key system-wide visual, architectural, and functional enhancements to Zenith:
 
+*   **TypeScript to React JS (JavaScript/JSX) Migration**: Transformed the entire frontend React codebase from TypeScript (`.ts`/`.tsx`) to plain, high-performance **React JS (`.js`/`.jsx`)**. All types, interfaces, and static annotations were safely stripped while preserving 100% of formatting, absolute path imports (mapped via standard `jsconfig.json`), and features.
 *   **Reactive Class-Based Dark Mode theme**: Built a robust dark-theme first layout. The workspace store (`useAuthStore`) seamlessly caches user preference within local storage and defaults to a gorgeous dark zinc/indigo theme (`#09090b` carbon) for first-time visitors, completely eliminating visual contrast and white-on-white text bugs.
 *   **Fully Functional Autocomplete Workspace Search**: Upgraded the static command-palette mockup with a fully operational real-time search engine inside the top header. Pressing `⌘K` or `Ctrl+K` instantly focuses the bar, searching all Projects and Tasks in the active workspace and linking directly to target boards.
 *   **Breadcrumbs Navigation backlinks Reset**: Integrated direct State Purge controllers into the top-header breadcrumb list. Navigating back to the `Workspace` or the Workspace name breadcrumbs clears the project selector state dynamically, preventing stale project sub-headers on workspace-level pages like the Calendar, Wikis, or Team tables.
@@ -38,7 +40,7 @@ graph TD
     A --> C[High-Performance Server]
     A --> D[Gemini AI Engine]
     
-    B --> B1[Next.js 15 App Router]
+    B --> B1[Next.js 15 App Router (React JS)]
     B --> B2[Zustand Stores & Themes]
     B --> B3[Socket.io Cursors & Typing]
     
@@ -60,7 +62,7 @@ graph TD
 ### 2. High-Performance Kanban Board
 - Zero-latency card drag-and-drops across columns (`BACKLOG`, `TODO`, `IN_PROGRESS`, `IN_REVIEW`, `DONE`).
 - **Optimistic UI Updates** in Zustand stores reflect on-screen state modifications instantly.
-- Integrated task timers (Pomodoro clocks) logging deep focus metrics directly into the database.
+- Integrated task timers (Pomodoro clocks) logging deep focus focus metrics directly into the database.
 
 ### 3. Real-Time Collaboration Core
 - Presence engines track and render mouse cursors coordinates of all active workspace developers.
@@ -81,12 +83,13 @@ graph TD
 
 ```
 d:/Project_Management/
-├── frontend/                  # Next.js 15 App Router Frontend client
+├── frontend/                  # Next.js 15 App Router React JS (JS/JSX) Frontend client
 │   ├── src/
-│   │   ├── app/               # Workspace Pages, Calendars, Wikis, Sprints, Profile Settings
-│   │   ├── components/        # Glassmorphic layouts, buttons, modals, input elements
-│   │   ├── store/             # Zustand state managers (useAuthStore, useWorkspaceStore, useSocketStore)
-│   │   └── lib/               # Global utility scripts
+│   │   ├── app/               # Workspace Pages, Calendars, Wikis, Sprints, Profile Settings (.jsx)
+│   │   ├── components/        # Glassmorphic layouts, buttons, modals (.jsx)
+│   │   ├── store/             # Zustand state managers (useAuthStore.js, useWorkspaceStore.js, useSocketStore.js)
+│   │   └── lib/               # Global utility scripts (.js)
+│   ├── jsconfig.json          # Next.js JavaScript directory path alias configurations
 │   ├── tailwind.config.js     # Custom animations, HSL themes, and gradients
 │   └── package.json
 └── backend/                   # Express TypeScript Sockets API Server
@@ -108,7 +111,7 @@ d:/Project_Management/
 ## 🚀 Setting Up the Suite
 
 ### Method A: One-Click Docker Multicontainer Compose (Recommended)
-You can orchestrate the entire database, TypeScript backend, and Next.js client environment instantly using Docker:
+You can orchestrate the entire database, TypeScript backend, and React JS client environment instantly using Docker:
 ```bash
 # Launch database, backend API, and frontend client concurrently
 docker-compose up --build -d
@@ -152,13 +155,13 @@ Start the TypeScript development server:
 npm run dev
 ```
 
-#### 3. Configure & Start Next.js Client
+#### 3. Configure & Start Next.js React JS Client
 ```bash
 cd ../frontend
 npm install
 ```
 
-Start the Next.js App Router client in dev mode:
+Start the Next.js App Router client in plain JavaScript dev mode:
 ```bash
 npm run dev
 ```
