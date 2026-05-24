@@ -24,7 +24,7 @@ services:
       - PORT=8000
       - DATABASE_URL=postgresql://neondb_owner:npg_aI4PwX1meKkA@ep-hidden-sea-aplzsnp7.c-7.us-east-1.aws.neon.tech/neondb?sslmode=require
       - JWT_SECRET=super-secret-zenith-jwt-key-2026-wow
-      - GEMINI_API_KEY=
+      - GEMINI_API_KEY=AIzaSyCdNSClT-kt9tWPar1_y7kVZBojTUZ4FX0
       - RESEND_API_KEY=
       - CORS_ORIGIN=http://localhost:3000
     depends_on:
