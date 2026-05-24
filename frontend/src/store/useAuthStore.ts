@@ -24,7 +24,7 @@ export const useAuthStore = create<AuthState>((set) => {
   const isClient = typeof window !== 'undefined';
   const savedToken = isClient ? localStorage.getItem('zenith_token') : null;
   const savedUser = isClient ? localStorage.getItem('zenith_user') : null;
-  const savedTheme = isClient ? localStorage.getItem('zenith_theme') === 'dark' : false;
+  const savedTheme = isClient ? (localStorage.getItem('zenith_theme') !== 'light') : true;
 
   // Set initial document class on import if in client
   if (isClient) {
