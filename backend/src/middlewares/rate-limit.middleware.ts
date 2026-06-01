@@ -20,7 +20,18 @@ export const rateLimiter = (limit: number, windowMs: number, keyPrefix: string =
   const store = stores[keyPrefix];
 
   return (req: Request, res: Response, next: NextFunction) => {
-    const ip = req.ip || (req.headers['x-forwarded-for'] as string) || 'unknown';
+    let ip = req.ip || 'unknown';
+    const forwardedFor = req.headers['x-forwarded-for'];
+    if (forwardedFor) {
+      const ips = typeof forwardedFor === 'string' 
+        ? forwardedFor.split(',') 
+        : Array.isArray(forwardedFor) 
+          ? forwardedFor 
+          : [];
+      if (ips.length > 0) {
+        ip = ips[0].trim();
+      }
+    }
     const now = Date.now();
 
     if (!store[ip]) {
