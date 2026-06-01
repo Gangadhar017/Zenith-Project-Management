@@ -1,8 +1,8 @@
 import { create } from "zustand";
 import { io } from "socket.io-client";
 import { useWorkspaceStore } from "./useWorkspaceStore";
+import { SOCKET_BASE } from "@/lib/api";
 
-const SOCKET_BASE = "http://localhost:8000";
 
 export const useSocketStore = create((set, get) => {
   return {

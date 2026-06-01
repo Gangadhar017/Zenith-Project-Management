@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import { useWorkspaceStore } from "@/store/useWorkspaceStore";
 import { useAuthStore } from "@/store/useAuthStore";
+import { API_BASE } from "@/lib/api";
 import {
   LineChart as RechartsLineChart,
   Line,
@@ -57,7 +58,7 @@ export default function WorkspaceAnalyticsPage() {
     const token = useAuthStore.getState().token;
     try {
       const res = await fetch(
-        "http://localhost:8000/api/ai/productivity-insights",
+        `${API_BASE}/ai/productivity-insights`,
         {
           headers: { Authorization: `Bearer ${token}` },
         },

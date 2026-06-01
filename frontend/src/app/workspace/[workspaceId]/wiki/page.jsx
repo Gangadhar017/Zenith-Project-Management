@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import { useWorkspaceStore } from "@/store/useWorkspaceStore";
 import { useAuthStore } from "@/store/useAuthStore";
+import { API_BASE } from "@/lib/api";
 import {
   Sparkles,
   FileText,
@@ -79,7 +80,7 @@ export default function WorkspaceWikiPage() {
     const token = useAuthStore.getState().token;
     try {
       const res = await fetch(
-        "http://localhost:8000/api/ai/summarize-meeting",
+        `${API_BASE}/ai/summarize-meeting`,
         {
           method: "POST",
           headers: {

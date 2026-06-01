@@ -22,7 +22,10 @@ services:
       - "8000:8000"
     environment:
       - PORT=8000
-      - DATABASE_URL=postgresql://neondb_owner:npg_aI4PwX1meKkA@ep-hidden-sea-aplzsnp7.c-7.us-east-1.aws.neon.tech/neondb?sslmode=require
+      # Connect to the local 'db' Postgres container inside the Compose network
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/zenith?schema=public
+      # Alternative Neon Database URL:
+      # - DATABASE_URL=postgresql://neondb_owner:npg_aI4PwX1meKkA@ep-hidden-sea-aplzsnp7.c-7.us-east-1.aws.neon.tech/neondb?sslmode=require
       - JWT_SECRET=super-secret-zenith-jwt-key-2026-wow
       - GEMINI_API_KEY=AIzaSyCdNSClT-kt9tWPar1_y7kVZBojTUZ4FX0
       - RESEND_API_KEY=
@@ -31,7 +34,11 @@ services:
       - db
 
   frontend:
-    build: ./frontend
+    build:
+      context: ./frontend
+      args:
+        - NEXT_PUBLIC_API_URL=http://localhost:8000/api
+        - NEXT_PUBLIC_SOCKET_URL=http://localhost:8000
     container_name: zenith-frontend
     restart: always
     ports:

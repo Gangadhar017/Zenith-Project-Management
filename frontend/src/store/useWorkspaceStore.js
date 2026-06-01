@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { useAuthStore } from "./useAuthStore";
+import { API_BASE } from "@/lib/api";
 
-const API_BASE = "http://localhost:8000/api";
 
 export const useWorkspaceStore = create((set, get) => {
   const getHeaders = () => {

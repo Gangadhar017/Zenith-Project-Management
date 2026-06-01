@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useWorkspaceStore } from "@/store/useWorkspaceStore";
 import { useAuthStore } from "@/store/useAuthStore";
+import { API_BASE } from "@/lib/api";
 import {
   Sparkles,
   Layers,
@@ -103,7 +104,7 @@ export default function DashboardPage() {
       // Fetch Workspace metrics stats
       const token = useAuthStore.getState().token;
       fetch(
-        `http://localhost:8000/api/workspaces/${currentWorkspace.id}/stats`,
+        `${API_BASE}/workspaces/${currentWorkspace.id}/stats`,
         {
           headers: { Authorization: `Bearer ${token}` },
         },
@@ -115,7 +116,7 @@ export default function DashboardPage() {
       // Trigger AI Risk Shield scan
       setLoadingRisk(true);
       fetch(
-        `http://localhost:8000/api/ai/workspace-risks/${currentWorkspace.id}`,
+        `${API_BASE}/ai/workspace-risks/${currentWorkspace.id}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         },

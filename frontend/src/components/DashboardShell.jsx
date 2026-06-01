@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useWorkspaceStore } from "@/store/useWorkspaceStore";
+import { API_BASE } from "@/lib/api";
 import {
   Layers,
   Sparkles,
@@ -136,7 +137,7 @@ export default function DashboardShell({ children }) {
     setClerkLoading(true);
     const token = localStorage.getItem("zenith_token") || "";
     try {
-      const res = await fetch("http://localhost:8000/api/auth/profile", {
+      const res = await fetch(`${API_BASE}/auth/profile`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -170,7 +171,7 @@ export default function DashboardShell({ children }) {
     setClerkLoading(true);
     const token = localStorage.getItem("zenith_token") || "";
     try {
-      const res = await fetch("http://localhost:8000/api/auth/profile", {
+      const res = await fetch(`${API_BASE}/auth/profile`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

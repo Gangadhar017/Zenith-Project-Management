@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { useParams } from "next/navigation";
 import { useWorkspaceStore } from "@/store/useWorkspaceStore";
 import { useAuthStore } from "@/store/useAuthStore";
+import { API_BASE } from "@/lib/api";
 import { Sparkles, Bot, Send, Cpu } from "lucide-react";
 
 export default function AIAssistantHubPage() {
@@ -42,7 +43,7 @@ export default function AIAssistantHubPage() {
 
     const token = useAuthStore.getState().token;
     try {
-      const res = await fetch("http://localhost:8000/api/ai/chatbot", {
+      const res = await fetch(`${API_BASE}/ai/chatbot`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -69,7 +70,7 @@ export default function AIAssistantHubPage() {
     setStandupLoading(true);
     const token = useAuthStore.getState().token;
     try {
-      const res = await fetch("http://localhost:8000/api/ai/daily-standup", {
+      const res = await fetch(`${API_BASE}/ai/daily-standup`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await res.json();
@@ -90,7 +91,7 @@ export default function AIAssistantHubPage() {
     const token = useAuthStore.getState().token;
     try {
       const res = await fetch(
-        `http://localhost:8000/api/ai/project-summary/${selectedProj}`,
+        `${API_BASE}/ai/project-summary/${selectedProj}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         },

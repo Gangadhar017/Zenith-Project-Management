@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import { useWorkspaceStore } from "@/store/useWorkspaceStore";
 import { useAuthStore } from "@/store/useAuthStore";
+import { API_BASE } from "@/lib/api";
 import {
   Users,
   UserPlus,
@@ -35,7 +36,7 @@ export default function WorkspaceTeamPage() {
     if (!workspaceId) return;
     const token = useAuthStore.getState().token;
     // Quick direct query to backend workspaces invite listing
-    fetch(`http://localhost:8000/api/workspaces`, {
+    fetch(`${API_BASE}/workspaces`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((res) => res.json())
@@ -63,7 +64,7 @@ export default function WorkspaceTeamPage() {
     const token = useAuthStore.getState().token;
     try {
       const res = await fetch(
-        `http://localhost:8000/api/workspaces/${workspaceId}/invite`,
+        `${API_BASE}/workspaces/${workspaceId}/invite`,
         {
           method: "POST",
           headers: {
@@ -100,7 +101,7 @@ export default function WorkspaceTeamPage() {
     const token = useAuthStore.getState().token;
     try {
       const res = await fetch(
-        `http://localhost:8000/api/workspaces/${workspaceId}/members/${userId}`,
+        `${API_BASE}/workspaces/${workspaceId}/members/${userId}`,
         {
           method: "DELETE",
           headers: { Authorization: `Bearer ${token}` },

@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { useAuthStore } from "@/store/useAuthStore";
+import { API_BASE } from "@/lib/api";
 import {
   Sparkles,
   User,
@@ -33,7 +34,7 @@ export default function ProfileSettingsPage() {
 
     const token = localStorage.getItem("zenith_token") || "";
     try {
-      const res = await fetch("http://localhost:8000/api/auth/profile", {
+      const res = await fetch(`${API_BASE}/auth/profile`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -73,7 +74,7 @@ export default function ProfileSettingsPage() {
     setLoading(true);
     const token = localStorage.getItem("zenith_token") || "";
     try {
-      const res = await fetch("http://localhost:8000/api/auth/profile", {
+      const res = await fetch(`${API_BASE}/auth/profile`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

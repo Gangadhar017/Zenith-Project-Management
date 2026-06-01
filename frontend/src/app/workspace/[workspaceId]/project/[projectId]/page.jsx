@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import { useWorkspaceStore } from "@/store/useWorkspaceStore";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useSocketStore } from "@/store/useSocketStore";
+import { API_BASE } from "@/lib/api";
 import {
   Sparkles,
   Bot,
@@ -211,7 +212,7 @@ export default function ProjectBoardPage() {
     const token = useAuthStore.getState().token;
     try {
       const res = await fetch(
-        `http://localhost:8000/api/tasks/${selectedTask.id}/subtasks`,
+        `${API_BASE}/tasks/${selectedTask.id}/subtasks`,
         {
           method: "POST",
           headers: {
@@ -237,7 +238,7 @@ export default function ProjectBoardPage() {
     const token = useAuthStore.getState().token;
     try {
       const res = await fetch(
-        `http://localhost:8000/api/subtasks/${subtaskId}`,
+        `${API_BASE}/subtasks/${subtaskId}`,
         {
           method: "PUT",
           headers: {
@@ -267,7 +268,7 @@ export default function ProjectBoardPage() {
     const token = useAuthStore.getState().token;
     try {
       const res = await fetch(
-        `http://localhost:8000/api/tasks/${selectedTask.id}/comments`,
+        `${API_BASE}/tasks/${selectedTask.id}/comments`,
         {
           method: "POST",
           headers: {
@@ -294,7 +295,7 @@ export default function ProjectBoardPage() {
     if (!selectedTask) return;
     const token = useAuthStore.getState().token;
     try {
-      await fetch(`http://localhost:8000/api/tasks/${selectedTask.id}/timer`, {
+      await fetch(`${API_BASE}/tasks/${selectedTask.id}/timer`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -320,7 +321,7 @@ export default function ProjectBoardPage() {
       const backlogItems = tasks.filter(
         (t) => t.status === "BACKLOG" || t.status === "TODO",
       );
-      const res = await fetch(`http://localhost:8000/api/ai/optimize-sprint`, {
+      const res = await fetch(`${API_BASE}/ai/optimize-sprint`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -350,7 +351,7 @@ export default function ProjectBoardPage() {
     setSolvingBug(true);
     const token = useAuthStore.getState().token;
     try {
-      const res = await fetch(`http://localhost:8000/api/ai/solve-bug`, {
+      const res = await fetch(`${API_BASE}/ai/solve-bug`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -378,7 +379,7 @@ export default function ProjectBoardPage() {
     setReccingAssignee(true);
     const token = useAuthStore.getState().token;
     try {
-      const res = await fetch(`http://localhost:8000/api/ai/smart-assign`, {
+      const res = await fetch(`${API_BASE}/ai/smart-assign`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
