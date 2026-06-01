@@ -97,7 +97,7 @@ export class AIService {
   }
 
   /**
-   * 2. AI Sprint Optimizer
+   * 2. AI Sprint Optimizer (Capacity-Aware)
    */
   static async optimizeSprint(
     workspaceId: string, 
@@ -106,29 +106,85 @@ export class AIService {
     teamSize: number
   ) {
     const taskCount = backlogTasks.length;
+    
+    // 1. Fetch live workspace membership and workloads
+    let membersInfo: Array<{
+      id: string;
+      name: string;
+      role: string;
+      activeTasksCount: number;
+      highPriorityTasksCount: number;
+    }> = [];
+
+    try {
+      const members = await prisma.membership.findMany({
+        where: { workspaceId },
+        include: {
+          user: {
+            include: {
+              assignedTasks: {
+                where: {
+                  status: {
+                    not: 'DONE'
+                  }
+                }
+              }
+            }
+          }
+        }
+      });
+      membersInfo = members.map(m => ({
+        id: m.user.id,
+        name: m.user.name,
+        role: m.role,
+        activeTasksCount: m.user.assignedTasks.length,
+        highPriorityTasksCount: m.user.assignedTasks.filter(t => t.priority === 'HIGH' || t.priority === 'URGENT').length
+      }));
+    } catch (err) {
+      console.error('Failed to fetch workspace memberships workloads:', err);
+    }
+
+    const calculatedTeamSize = membersInfo.length || teamSize || 3;
+
+    // 2. Refined fallback recommendations based on actual workload metrics
     const fallback = {
       sprintName: sprintName || 'AI Optimized Sprint',
-      recommendedCapacity: teamSize * 8, // hours per developer per sprint
+      recommendedCapacity: calculatedTeamSize * 8, // hours per developer per sprint
       assignedTasksCount: Math.min(taskCount, 5),
-      riskScore: 25,
+      riskScore: membersInfo.some(m => m.activeTasksCount > 4) ? 65 : 25,
       recommendations: [
         'Backlog looks healthy. High priority tasks have been scheduled first.',
-        'Consider assigning Task #1 and Task #2 to your backend lead.',
+        ...membersInfo.map(m => m.activeTasksCount > 4 
+          ? `Warning: ${m.name} (${m.role}) is near/over capacity with ${m.activeTasksCount} active tasks. Consider reassigning new cards.`
+          : `${m.name} (${m.role}) has optimal capacity (${m.activeTasksCount} active tasks) for sprint assignments.`
+        ),
         'Keep daily sync focused on the core integration paths.'
       ]
     };
 
     const aiPrompt = `
-      You are an agile coordinator.
-      We are planning a sprint named "${sprintName}" for a team of ${teamSize} members.
-      Here are the active backlog items:
-      ${JSON.stringify(backlogTasks.map(t => ({ id: t.id, title: t.title, priority: t.priority })))}
+      You are an elite agile coordinator and capacity-aware scrum master.
+      We are planning a sprint named "${sprintName}" in a workspace with the following team members and their current active workloads:
+      ${JSON.stringify(membersInfo, null, 2)}
 
-      Optimize the planning and return a JSON summary including:
-      - recommendedCapacity (total points/hours recommended)
-      - assignedTasksCount (how many items are prioritized for this sprint)
-      - riskScore (0 to 100 representing risk of missing the sprint goal)
-      - recommendations (string array of action items)
+      Here is the list of new backlog items to prioritize and assign:
+      ${JSON.stringify(backlogTasks.map(t => ({ id: t.id, title: t.title, priority: t.priority, tags: t.tags })))}
+
+      Please optimize the sprint planning. The response MUST:
+      1. Calculate recommendedCapacity (total points/hours recommended for the team).
+      2. Decide which backlog tasks to assign to which team members based on their roles, expertise (matching task tags), and their current workload. Keep active tasks count balanced (do not overload people with already high workloads, assign more tasks to members with lighter workloads).
+      3. Compute a riskScore (0 to 100) representing the risk of failing the sprint. If some members are overloaded or there are many urgent backlog tasks, riskScore should reflect this.
+      4. Provide clear, highly detailed, capacity-aware action-item recommendations. Include who should take which task, why they were chosen, and warning highlights if a member is near/over capacity.
+
+      Return the analysis in a clean JSON format matching the following:
+      {
+        "sprintName": string,
+        "recommendedCapacity": number,
+        "assignedTasksCount": number,
+        "riskScore": number,
+        "recommendations": string[]
+      }
+      Only return the raw JSON object. No markdown code blocks.
     `;
 
     return await this.executePrompt(aiPrompt, fallback);
@@ -368,20 +424,100 @@ app.use(cors({
   }
 
   /**
-   * 11. Workspace AI Chatbot Assistant
+   * 11. Workspace AI Chatbot Assistant (Grounded RAG/DB context)
    */
   static async chatWithWorkspace(workspaceId: string, message: string) {
+    // 1. Fetch live workspace dataset from Postgres DB
+    const workspace = await prisma.workspace.findUnique({
+      where: { id: workspaceId },
+      include: {
+        projects: {
+          include: {
+            tasks: {
+              include: {
+                assignee: true
+              }
+            }
+          }
+        },
+        documents: {
+          select: {
+            title: true,
+            content: true,
+            isWiki: true
+          }
+        }
+      }
+    });
+
+    // 2. Synthesize context maps for projects and tasks
+    const projectsList = workspace?.projects.map(p => ({
+      name: p.name,
+      description: p.description,
+      status: p.status,
+      tasks: p.tasks.map(t => ({
+        title: t.title,
+        status: t.status,
+        priority: t.priority,
+        assignee: t.assignee?.name || 'Unassigned'
+      }))
+    })) || [];
+
+    // 3. Synthesize context maps for documents using keyword-relevance ranking (RAG context filtering)
+    const queryTerms = message.toLowerCase().split(/\s+/).filter(term => term.length > 2);
+    
+    const documentsList = (workspace?.documents || []).map(doc => {
+      let score = 0;
+      const titleLower = doc.title.toLowerCase();
+      const contentLower = doc.content.toLowerCase();
+      
+      for (const term of queryTerms) {
+        if (titleLower.includes(term)) score += 10; // title keyword matches are high value
+        if (contentLower.includes(term)) score += 2; // content matches
+      }
+      
+      return { doc, score };
+    })
+    // Sort in descending order of relevance score
+    .sort((a, b) => b.score - a.score)
+    // Keep top 5 most relevant documents to avoid exceeding token limit
+    .slice(0, 5)
+    .map(item => ({
+      title: item.doc.title,
+      isWiki: item.doc.isWiki,
+      contentPreview: item.doc.content.slice(0, 500) // retrieve longer 500-char preview for grounding
+    }));
+
     const fallback = {
-      reply: `I checked the active cards inside your workspace. Currently, you have 3 high priority tasks in your Backlog, 1 active Sprint running, and no major blockers flagged. How can I help you optimize your milestones further?`
+      reply: `I scanned the active workspace "${workspace?.name || 'Zenith'}". You have ${projectsList.length} projects and ${documentsList.length} relevant wiki documents loaded. Let me know what specific task or wiki reference you'd like to dive into.`
     };
 
     const aiPrompt = `
-      You are Zenith Brain, an interactive workspace assistant.
-      Answer the user's question regarding workspace context:
-      Question: "${message}"
+      You are "Zenith Brain", the context-aware digital teammate and digital scrum assistant inside the enterprise agile project management app "Zenith".
+      You have real-time access to all documents, wiki guides, projects, tasks, and assignees in this workspace.
+      
+      Here is the live grounded workspace database context:
+      ==========================================
+      Workspace Name: ${workspace?.name || 'N/A'}
+      Description: ${workspace?.description || 'N/A'}
+      
+      PROJECTS & KANBAN BOARDS:
+      ${JSON.stringify(projectsList, null, 2)}
+      
+      DOCUMENTS & WIKIS (Grounded RAG):
+      ${JSON.stringify(documentsList, null, 2)}
+      ==========================================
 
-      Return JSON:
-      - reply (string response)
+      Answer the user's inquiry based on this grounded database context. Keep your response professional, helpful, concise, and structured. 
+      If the user is asking about specific task statuses, assignees, or wiki content, look it up in the context above and answer precisely. If the context does not contain the answer, answer politely using your general knowledge but mention that it is not explicitly mapped in the active workspace context.
+
+      User Message: "${message}"
+
+      The output MUST be a JSON object matching this structure:
+      {
+        "reply": string (markdown supported response text, you can use lists, bold text, etc.)
+      }
+      Only return the raw JSON object. No markdown code blocks.
     `;
 
     return await this.executePrompt(aiPrompt, fallback);
