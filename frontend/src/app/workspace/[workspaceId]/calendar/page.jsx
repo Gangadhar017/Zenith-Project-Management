@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { useParams } from "next/navigation";
 import { useWorkspaceStore } from "@/store/useWorkspaceStore";
+import { useShallow } from "zustand/react/shallow";
 import {
   Calendar as CalendarIcon,
   ChevronLeft,
@@ -13,7 +14,12 @@ export default function WorkspaceCalendarPage() {
   const params = useParams();
   const workspaceId = params.workspaceId;
 
-  const { tasks, projects } = useWorkspaceStore();
+  const { tasks, projects } = useWorkspaceStore(
+    useShallow((state) => ({
+      tasks: state.tasks,
+      projects: state.projects,
+    }))
+  );
 
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());

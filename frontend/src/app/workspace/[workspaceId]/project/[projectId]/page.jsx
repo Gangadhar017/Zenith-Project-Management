@@ -5,6 +5,8 @@ import { useParams } from "next/navigation";
 import { useWorkspaceStore } from "@/store/useWorkspaceStore";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useSocketStore } from "@/store/useSocketStore";
+import { useShallow } from "zustand/react/shallow";
+import { motion } from "framer-motion";
 import { API_BASE } from "@/lib/api";
 import {
   Sparkles,
@@ -36,7 +38,17 @@ export default function ProjectBoardPage() {
     updateTaskOptimistic,
     saveTaskUpdate,
     deleteTask,
-  } = useWorkspaceStore();
+  } = useWorkspaceStore(
+    useShallow((state) => ({
+      currentProject: state.currentProject,
+      tasks: state.tasks,
+      selectProject: state.selectProject,
+      createTask: state.createTask,
+      updateTaskOptimistic: state.updateTaskOptimistic,
+      saveTaskUpdate: state.saveTaskUpdate,
+      deleteTask: state.deleteTask,
+    }))
+  );
 
   const {
     socket,
@@ -45,7 +57,16 @@ export default function ProjectBoardPage() {
     emitTaskMove,
     emitTyping,
     isTyping,
-  } = useSocketStore();
+  } = useSocketStore(
+    useShallow((state) => ({
+      socket: state.socket,
+      initializeSocket: state.initializeSocket,
+      disconnectSocket: state.disconnectSocket,
+      emitTaskMove: state.emitTaskMove,
+      emitTyping: state.emitTyping,
+      isTyping: state.isTyping,
+    }))
+  );
 
   const [activeTab, setActiveTab] = useState("kanban");
   const [selectedTask, setSelectedTask] = useState(null);
@@ -463,7 +484,13 @@ export default function ProjectBoardPage() {
                 {/* Tasks loop inside status lane */}
                 <div className="flex flex-col gap-3 flex-1 overflow-y-auto min-h-[100px]">
                   {columnTasks.map((t) => (
-                    <div
+                    <motion.div
+                      layout
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -8 }}
+                      whileHover={{ y: -2, scale: 1.01 }}
+                      transition={{ type: "spring", stiffness: 350, damping: 25 }}
                       key={t.id}
                       draggable
                       onDragStart={(e) => handleDragStart(e, t.id, col)}
@@ -513,7 +540,7 @@ export default function ProjectBoardPage() {
                           />
                         )}
                       </div>
-                    </div>
+                    </motion.div>
                   ))}
                 </div>
 

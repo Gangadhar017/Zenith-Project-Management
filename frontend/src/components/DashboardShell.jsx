@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useWorkspaceStore } from "@/store/useWorkspaceStore";
+import { useShallow } from "zustand/react/shallow";
 import { API_BASE } from "@/lib/api";
 import {
   Layers,
@@ -56,7 +57,22 @@ export default function DashboardShell({ children }) {
     createProject,
     selectProject,
     fetchAllWorkspaceTasks,
-  } = useWorkspaceStore();
+  } = useWorkspaceStore(
+    useShallow((state) => ({
+      workspaces: state.workspaces,
+      currentWorkspace: state.currentWorkspace,
+      projects: state.projects,
+      currentProject: state.currentProject,
+      allTasks: state.allTasks,
+      documents: state.documents,
+      fetchWorkspaces: state.fetchWorkspaces,
+      selectWorkspace: state.selectWorkspace,
+      createWorkspace: state.createWorkspace,
+      createProject: state.createProject,
+      selectProject: state.selectProject,
+      fetchAllWorkspaceTasks: state.fetchAllWorkspaceTasks,
+    }))
+  );
 
   // Global Search states
   const [globalSearchQuery, setGlobalSearchQuery] = useState("");

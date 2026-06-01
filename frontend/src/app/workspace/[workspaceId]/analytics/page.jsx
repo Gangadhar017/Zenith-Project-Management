@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import { useWorkspaceStore } from "@/store/useWorkspaceStore";
+import { useShallow } from "zustand/react/shallow";
 import { useAuthStore } from "@/store/useAuthStore";
 import { API_BASE } from "@/lib/api";
 import {
@@ -22,7 +23,11 @@ export default function WorkspaceAnalyticsPage() {
   const params = useParams();
   const workspaceId = params.workspaceId;
 
-  const { tasks } = useWorkspaceStore();
+  const { tasks } = useWorkspaceStore(
+    useShallow((state) => ({
+      tasks: state.tasks,
+    }))
+  );
 
   const [insights, setInsights] = useState(null);
   const [loadingInsights, setLoadingInsights] = useState(false);

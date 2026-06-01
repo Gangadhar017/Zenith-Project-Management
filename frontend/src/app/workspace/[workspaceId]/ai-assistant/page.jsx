@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { useParams } from "next/navigation";
 import { useWorkspaceStore } from "@/store/useWorkspaceStore";
+import { useShallow } from "zustand/react/shallow";
 import { useAuthStore } from "@/store/useAuthStore";
 import { API_BASE } from "@/lib/api";
 import { Sparkles, Bot, Send, Cpu } from "lucide-react";
@@ -10,7 +11,12 @@ import { Sparkles, Bot, Send, Cpu } from "lucide-react";
 export default function AIAssistantHubPage() {
   const params = useParams();
   const workspaceId = params.workspaceId;
-  const { currentWorkspace, projects } = useWorkspaceStore();
+  const { currentWorkspace, projects } = useWorkspaceStore(
+    useShallow((state) => ({
+      currentWorkspace: state.currentWorkspace,
+      projects: state.projects,
+    }))
+  );
   const [chatMessage, setChatMessage] = useState("");
   const [chatLogs, setChatLogs] = useState([
     {
