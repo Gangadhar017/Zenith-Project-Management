@@ -10,6 +10,7 @@ import * as projCtrl from '../controllers/project.controller';
 import * as taskCtrl from '../controllers/task.controller';
 import * as aiCtrl from '../controllers/ai.controller';
 import * as docCtrl from '../controllers/document.controller';
+import * as billingCtrl from '../controllers/billing.controller';
 
 const router = Router();
 
@@ -82,5 +83,12 @@ router.get('/ai/predict-deadline/:projectId', authenticateToken, aiLimiter, aiCt
 router.post('/ai/smart-assign', authenticateToken, aiLimiter, aiCtrl.smartAssign);
 router.get('/ai/daily-standup', authenticateToken, aiLimiter, aiCtrl.generateDailyStandup);
 router.post('/ai/chatbot', authenticateToken, aiLimiter, aiCtrl.chatbotAssistant);
+
+// ==========================================
+// MONETIZATION & SUBSCRIPTIONS (STRIPE)
+// ==========================================
+router.post('/billing/checkout', authenticateToken, billingCtrl.checkout);
+router.get('/billing/mock-success', billingCtrl.mockSuccess);
+router.post('/billing/webhook', billingCtrl.webhook);
 
 export default router;

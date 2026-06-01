@@ -4,6 +4,8 @@ import React, { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useWorkspaceStore } from "@/store/useWorkspaceStore";
 import { useAuthStore } from "@/store/useAuthStore";
+import { useShallow } from "zustand/react/shallow";
+import { API_BASE } from "@/lib/api";
 import {
   Sparkles,
   Settings,
@@ -12,6 +14,8 @@ import {
   Save,
   Key,
   ShieldCheck,
+  CreditCard,
+  Award,
 } from "lucide-react";
 
 export default function WorkspaceSettingsPage() {
@@ -20,7 +24,13 @@ export default function WorkspaceSettingsPage() {
   const workspaceId = params.workspaceId;
 
   const { currentWorkspace, selectWorkspace, fetchWorkspaces } =
-    useWorkspaceStore();
+    useWorkspaceStore(
+      useShallow((state) => ({
+        currentWorkspace: state.currentWorkspace,
+        selectWorkspace: state.selectWorkspace,
+        fetchWorkspaces: state.fetchWorkspaces,
+      }))
+    );
 
   const [name, setName] = useState(currentWorkspace?.name || "");
   const [desc, setDesc] = useState(currentWorkspace?.description || "");
@@ -28,6 +38,43 @@ export default function WorkspaceSettingsPage() {
 
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
+  const [billingLoading, setBillingLoading] = useState(false);
+
+  React.useEffect(() => {
+    if (typeof window !== "undefined") {
+      const searchParams = new URLSearchParams(window.location.search);
+      if (searchParams.get("billing") === "success") {
+        setSuccess("Congratulations! Your workspace has been successfully upgraded to Zenith Enterprise Pro!");
+        fetchWorkspaces();
+      }
+    }
+  }, [workspaceId]);
+
+  const handleUpgradeCheckout = async () => {
+    setBillingLoading(true);
+    const token = useAuthStore.getState().token;
+    try {
+      const res = await fetch(`${API_BASE}/billing/checkout`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ workspaceId }),
+      });
+      const data = await res.json();
+      if (res.ok && data.checkoutUrl) {
+        window.location.href = data.checkoutUrl;
+      } else {
+        alert(data.message || "Failed to launch checkout portal.");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Billing gateway communication error.");
+    } finally {
+      setBillingLoading(false);
+    }
+  };
 
   const handleUpdateWorkspace = async (e) => {
     e.preventDefault();
@@ -188,6 +235,40 @@ export default function WorkspaceSettingsPage() {
 
         {/* PURGE / DELETE COLUMN (OWNER ONLY) */}
         <div className="flex flex-col gap-6">
+          {/* SUBSCRIPTION & BILLING PANEL */}
+          <div className="glass-panel p-6 rounded-2xl border-white/5 flex flex-col gap-4 relative overflow-hidden h-fit">
+            <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-green-500 via-transparent to-transparent" />
+
+            <h3 className="text-sm font-bold text-white flex items-center gap-1.5">
+              <CreditCard className="h-5 w-5 text-green-400" /> Subscription & Tier
+            </h3>
+
+            <div className="bg-white/5 p-4 rounded-xl border border-white/5 flex flex-col gap-3">
+              <div className="flex justify-between items-center">
+                <span className="text-[10px] text-zinc-500 font-bold uppercase">Current Tier:</span>
+                <span className={`text-[10px] font-black uppercase px-2 py-0.5 rounded flex items-center gap-1 ${currentWorkspace?.tier === 'PRO' ? 'bg-green-500/20 text-green-400 border border-green-500/30 animate-pulse' : 'bg-white/5 text-zinc-400'}`}>
+                  <Award className="h-3 w-3" /> {currentWorkspace?.tier || 'FREE'}
+                </span>
+              </div>
+              <p className="text-[10px] text-zinc-400 leading-relaxed font-light">
+                {currentWorkspace?.tier === 'PRO' 
+                  ? 'Thank you! You have unlocked unlimited projects, premium multiplayer boards, vector-dense AI chatbot, and Resend transactional queues.'
+                  : 'Upgrade to collaborate with up to 100 teammates, access unlimited board tasks, activate dense vector wiki indexing, and configure auto-reconnections.'
+                }
+              </p>
+            </div>
+
+            {currentWorkspace?.tier !== 'PRO' && (
+              <button
+                onClick={handleUpgradeCheckout}
+                disabled={billingLoading}
+                className="w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white hover:opacity-95 transition text-xs font-semibold py-2.5 rounded-xl flex items-center justify-center gap-1.5 shadow"
+              >
+                {billingLoading ? 'Opening Checkout Portal...' : 'Upgrade to Enterprise Pro'}
+              </button>
+            )}
+          </div>
+
           <div className="glass-panel p-6 rounded-2xl border-red-500/10 flex flex-col gap-4 relative overflow-hidden h-fit bg-red-500/[0.01]">
             <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-red-500 via-transparent to-transparent" />
 

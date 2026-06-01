@@ -71,17 +71,20 @@ model User {
 }
 
 model Workspace {
-  id          String       @id @default(uuid())
-  name        String
-  slug        String       @unique
-  description String?
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
-  memberships Membership[]
-  projects    Project[]
-  aiHistories AIHistory[]
-  messages    Message[]
-  documents   Document[]
+  id                   String       @id @default(uuid())
+  name                 String
+  slug                 String       @unique
+  description          String?
+  tier                 String       @default("FREE") // "FREE" | "PRO"
+  stripeCustomerId     String?
+  stripeSubscriptionId String?
+  createdAt            DateTime     @default(now())
+  updatedAt            DateTime     @updatedAt
+  memberships          Membership[]
+  projects             Project[]
+  aiHistories          AIHistory[]
+  messages             Message[]
+  documents            Document[]
 }
 
 model Membership {
