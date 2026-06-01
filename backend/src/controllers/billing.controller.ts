@@ -67,8 +67,7 @@ export const webhook = async (req: Request, res: Response) => {
   }
 
   try {
-    // Read raw body if possible or read buffer
-    const verified = await StripeService.handleWebhook((req as any).rawBody || req.body, signature, webhookSecret);
+    const verified = await StripeService.handleWebhook(req.body, signature, webhookSecret);
     if (verified) {
       return res.status(200).send({ received: true });
     }

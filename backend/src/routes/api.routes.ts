@@ -22,7 +22,10 @@ const aiLimiter = rateLimiter(20, 60 * 1000, 'artificial-intelligence');
 // AUTH & USERS
 // ==========================================
 router.post('/auth/register', authLimiter, validateRequest(registerSchema), authCtrl.register);
+router.post('/auth/verify-otp', authLimiter, authCtrl.verifyOTP);
 router.post('/auth/login', authLimiter, validateRequest(loginSchema), authCtrl.login);
+router.post('/auth/forgot-password', authLimiter, authCtrl.forgotPassword);
+router.post('/auth/reset-password', authLimiter, authCtrl.resetPassword);
 router.get('/auth/me', authenticateToken, authCtrl.getProfile);
 router.put('/auth/profile', authenticateToken, authCtrl.updateProfile);
 

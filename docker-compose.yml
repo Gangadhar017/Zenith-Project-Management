@@ -13,29 +13,46 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   backend:
-    build: ./backend
+    build:
+      context: ./backend
+      target: runner
     container_name: zenith-backend
     restart: always
     ports:
       - "8000:8000"
     environment:
       - PORT=8000
-      # Connect to the local 'db' Postgres container inside the Compose network
+      - NODE_ENV=production
+      # Switch to the 'db' service URL for full local Docker stack
       - DATABASE_URL=postgresql://postgres:postgres@db:5432/zenith?schema=public
-      # Alternative Neon Database URL:
+      # Alternative: Use Neon cloud DB instead
       # - DATABASE_URL=postgresql://neondb_owner:npg_aI4PwX1meKkA@ep-hidden-sea-aplzsnp7.c-7.us-east-1.aws.neon.tech/neondb?sslmode=require
       - JWT_SECRET=super-secret-zenith-jwt-key-2026-wow
-      - GEMINI_API_KEY=AIzaSyCdNSClT-kt9tWPar1_y7kVZBojTUZ4FX0
-      - RESEND_API_KEY=
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - RESEND_API_KEY=${RESEND_API_KEY}
+      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
+      - STRIPE_WEBHOOK_SECRET=${STRIPE_WEBHOOK_SECRET}
       - CORS_ORIGIN=http://localhost:3000
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8000/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
 
   frontend:
     build:
       context: ./frontend
+      target: runner
       args:
         - NEXT_PUBLIC_API_URL=http://localhost:8000/api
         - NEXT_PUBLIC_SOCKET_URL=http://localhost:8000
@@ -44,10 +61,12 @@ services:
     ports:
       - "3000:3000"
     environment:
+      - NODE_ENV=production
       - NEXT_PUBLIC_API_URL=http://localhost:8000/api
       - NEXT_PUBLIC_SOCKET_URL=http://localhost:8000
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
 
 volumes:
   postgres_data:

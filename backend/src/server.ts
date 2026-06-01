@@ -18,6 +18,10 @@ app.use(cors({
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
 }));
 
+// Stripe webhook must receive the raw request body for signature verification.
+// Apply express.raw() to this specific path BEFORE the general express.json() middleware.
+app.use('/api/billing/webhook', express.raw({ type: 'application/json' }));
+
 app.use(express.json());
 
 // API Base Route

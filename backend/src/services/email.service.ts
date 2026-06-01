@@ -330,4 +330,267 @@ export class EmailService {
       console.warn(`[Mock Email] Dispatching task assignment notification to ${to} (Resend API key missing)`);
     }
   }
+
+  /**
+   * Send a premium dark-themed HTML OTP validation email for registration
+   */
+  static async sendRegistrationOTP(email: string, otpCode: string, name: string) {
+    const htmlContent = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="utf-8">
+        <title>Verify Your Zenith Registration</title>
+        <style>
+          body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #09090b;
+            color: #fafafa;
+            margin: 0;
+            padding: 0;
+          }
+          .email-container {
+            max-width: 580px;
+            margin: 40px auto;
+            background-color: #18181b;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+          }
+          .header-glow {
+            height: 4px;
+            background: linear-gradient(90deg, #a855f7 0%, #3b82f6 100%);
+          }
+          .content {
+            padding: 40px;
+            text-align: center;
+          }
+          .logo {
+            font-size: 24px;
+            font-weight: 900;
+            letter-spacing: -0.05em;
+            background: linear-gradient(90deg, #a855f7 0%, #3b82f6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 24px;
+            display: inline-block;
+          }
+          h1 {
+            font-size: 22px;
+            font-weight: 800;
+            color: #ffffff;
+            margin-top: 0;
+            margin-bottom: 12px;
+            letter-spacing: -0.02em;
+          }
+          p {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #a1a1aa;
+            margin-top: 0;
+            margin-bottom: 24px;
+            font-weight: 300;
+          }
+          .otp-code {
+            display: inline-block;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 32px;
+            font-weight: 800;
+            letter-spacing: 6px;
+            background-color: #09090b;
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 16px 32px;
+            border-radius: 12px;
+            margin: 16px 0;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.8);
+          }
+          .warning-text {
+            font-size: 12px;
+            color: #ef4444;
+            margin-top: 24px;
+            font-weight: 400;
+          }
+          .footer {
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 24px;
+            text-align: center;
+            background-color: #09090b;
+          }
+          .footer-text {
+            font-size: 11px;
+            color: #52525b;
+            line-height: 1.5;
+            margin: 0;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="email-container">
+          <div class="header-glow"></div>
+          <div class="content">
+            <div class="logo">ZENITH</div>
+            <h1>Verify your email address</h1>
+            <p>Hi <strong>${name}</strong>,</p>
+            <p>Thank you for signing up for Zenith PM. Please enter the following 6-digit verification code to complete your registration. This code will expire in 10 minutes.</p>
+            <div class="otp-code">${otpCode}</div>
+            <p class="warning-text">If you did not initiate this request, please disregard this email. Do not share this code with anyone.</p>
+          </div>
+          <div class="footer">
+            <p class="footer-text">This security notification was sent from Zenith PM.</p>
+            <p class="footer-text" style="margin-top: 8px;">&copy; 2026 Zenith SaaS Inc. All rights reserved.</p>
+          </div>
+        </div>
+      </body>
+      </html>
+    `;
+
+    if (hasApiKey && resend) {
+      try {
+        await resend.emails.send({
+          from: 'Zenith Security <onboarding@resend.dev>',
+          to: email,
+          subject: `${otpCode} is your Zenith verification code`,
+          html: htmlContent
+        });
+        console.log(`[Resend] Registration OTP email successfully sent to ${email}`);
+      } catch (err) {
+        console.error('[Resend] Failed to send registration OTP email:', err);
+      }
+    } else {
+      console.warn(`[Mock Email] Dispatching registration OTP (${otpCode}) to ${email} (Resend API key missing)`);
+    }
+  }
+
+  /**
+   * Send a premium dark-themed HTML password recovery link email
+   */
+  static async sendPasswordResetLink(email: string, token: string, name: string) {
+    const resetUrl = `http://localhost:3000/reset-password?token=${token}&email=${encodeURIComponent(email)}`;
+    const htmlContent = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="utf-8">
+        <title>Reset Your Zenith Password</title>
+        <style>
+          body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #09090b;
+            color: #fafafa;
+            margin: 0;
+            padding: 0;
+          }
+          .email-container {
+            max-width: 580px;
+            margin: 40px auto;
+            background-color: #18181b;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+          }
+          .header-glow {
+            height: 4px;
+            background: linear-gradient(90deg, #a855f7 0%, #3b82f6 100%);
+          }
+          .content {
+            padding: 40px;
+            text-align: center;
+          }
+          .logo {
+            font-size: 24px;
+            font-weight: 900;
+            letter-spacing: -0.05em;
+            background: linear-gradient(90deg, #a855f7 0%, #3b82f6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 24px;
+            display: inline-block;
+          }
+          h1 {
+            font-size: 22px;
+            font-weight: 800;
+            color: #ffffff;
+            margin-top: 0;
+            margin-bottom: 12px;
+            letter-spacing: -0.02em;
+          }
+          p {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #a1a1aa;
+            margin-top: 0;
+            margin-bottom: 24px;
+            font-weight: 300;
+          }
+          .btn {
+            display: inline-block;
+            background: linear-gradient(90deg, #a855f7 0%, #3b82f6 100%);
+            color: #ffffff !important;
+            text-decoration: none;
+            padding: 12px 32px;
+            font-size: 13px;
+            font-weight: 600;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(168, 85, 247, 0.3);
+            margin-bottom: 24px;
+          }
+          .warning-text {
+            font-size: 12px;
+            color: #71717a;
+            margin-top: 24px;
+            font-weight: 400;
+          }
+          .footer {
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 24px;
+            text-align: center;
+            background-color: #09090b;
+          }
+          .footer-text {
+            font-size: 11px;
+            color: #52525b;
+            line-height: 1.5;
+            margin: 0;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="email-container">
+          <div class="header-glow"></div>
+          <div class="content">
+            <div class="logo">ZENITH</div>
+            <h1>Reset your password</h1>
+            <p>Hi <strong>${name}</strong>,</p>
+            <p>We received a request to reset your password on Zenith PM. Click the button below to choose a new password. This recovery link is valid for 1 hour and can only be used once.</p>
+            <a href="${resetUrl}" class="btn">Reset Password</a>
+            <p class="warning-text">If you did not make this request, you can safely ignore this email. Your password will remain unchanged.</p>
+          </div>
+          <div class="footer">
+            <p class="footer-text">This security notification was sent from Zenith PM.</p>
+            <p class="footer-text" style="margin-top: 8px;">&copy; 2026 Zenith SaaS Inc. All rights reserved.</p>
+          </div>
+        </div>
+      </body>
+      </html>
+    `;
+
+    if (hasApiKey && resend) {
+      try {
+        await resend.emails.send({
+          from: 'Zenith Security <onboarding@resend.dev>',
+          to: email,
+          subject: `Reset your Zenith password`,
+          html: htmlContent
+        });
+        console.log(`[Resend] Password reset link email successfully sent to ${email}`);
+      } catch (err) {
+        console.error('[Resend] Failed to send password reset email:', err);
+      }
+    } else {
+      console.warn(`[Mock Email] Dispatching password reset link to ${email} (Resend API key missing)`);
+    }
+  }
 }

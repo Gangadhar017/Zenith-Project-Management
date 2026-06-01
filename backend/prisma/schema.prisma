@@ -50,6 +50,24 @@ enum NotificationType {
   MENTION
 }
 
+model OTPVerification {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  otpCode   String
+  name      String
+  password  String   // Store hashed password temporarily
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
+
+model PasswordResetToken {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
+
 model User {
   id           String        @id @default(uuid())
   email        String        @unique
