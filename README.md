@@ -4,12 +4,14 @@
 <div align="center">
 
 [![Next.js Version](https://img.shields.io/badge/Next.js-15.1.7-black?style=for-the-badge&logo=next.js)](https://nextjs.org)
-[![React JS](https://img.shields.io/badge/React_JS-JavaScript/JSX-blue?style=for-the-badge&logo=react)](https://react.dev)
+[![React Version](https://img.shields.io/badge/React-19.0.0-blue?style=for-the-badge&logo=react)](https://react.dev)
 [![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-3.4-blue?style=for-the-badge&logo=tailwind-css)](https://tailwindcss.com)
 [![TypeScript (Backend)](https://img.shields.io/badge/TypeScript-(Backend)-blue?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org)
-[![Prisma ORM](https://img.shields.io/badge/Prisma_ORM-6.x-teal?style=for-the-badge&logo=prisma)](https://prisma.io)
+[![Prisma ORM](https://img.shields.io/badge/Prisma_ORM-5.14.0-teal?style=for-the-badge&logo=prisma)](https://prisma.io)
 [![Docker Support](https://img.shields.io/badge/Docker-Compatible-blue?style=for-the-badge&logo=docker)](https://www.docker.com)
 [![Google Gemini](https://img.shields.io/badge/Google_Gemini-Armed-purple?style=for-the-badge&logo=google-gemini)](https://deepmind.google/technologies/gemini/)
+[![Resend SDK](https://img.shields.io/badge/Resend_SDK-Enabled-orange?style=for-the-badge)](https://resend.com)
+[![Stripe API](https://img.shields.io/badge/Stripe_API-Monetized-green?style=for-the-badge&logo=stripe)](https://stripe.com)
 
 </div>
 
@@ -17,7 +19,31 @@
 
 ### 📖 Introduction
 
-**Zenith** is a high-fidelity, high-velocity agile project management SaaS platform built for high-performance engineering teams. Engineered to outperform legacy task trackers, Zenith pairs a sleek, modern glassmorphic **Next.js 15 React JS (JavaScript/JSX)** frontend with a high-performance **Node.js/Express/TypeScript** backend, real-time collaboration engines powered by **Socket.io**, and **11 context-aware Gemini AI models** that act as cooperative digital teammates.
+**Zenith PM** is a high-fidelity, high-velocity agile project management SaaS platform purpose-built for high-performance engineering squads. Designed to replace sluggish legacy trackers, Zenith matches a clean, modern glassmorphic frontend built with **Next.js 15 and React 19 (JavaScript/JSX)** with a scalable, high-throughput **Node.js/Express/TypeScript** backend. The system features real-time synchronization via **Socket.io** alongside an integrated suite of **11 context-aware Gemini AI tools** functioning as digital team members.
+
+---
+
+## 🏗️ Architectural Core Matrix
+
+```mermaid
+graph TD
+    A["Zenith Platform"] --> B["Enterprise App Client"]
+    A --> C["High-Performance Server"]
+    A --> D["Gemini AI Engine"]
+    
+    B --> B1["Next.js 15 App Router (React 19)"]
+    B --> B2["Zustand Selector useShallow Optimization"]
+    B --> B3["Framer Motion Kanban & Socket Cursors"]
+    
+    C --> C1["Express TypeScript & JWT Auth Gateway"]
+    C --> C2["Prisma Schema & PostgreSQL Data Layer"]
+    C --> C3["Presence Rooms State Engine"]
+    
+    D --> D1["Prompt-to-Tasks Wizard Service"]
+    D --> D2["Capacity-Aware Sprint Optimizer"]
+    D --> D3["Gemini Automated Bug Solver"]
+    D --> D4["Grounded Workspace Chat Bot"]
+```
 
 ---
 
@@ -52,48 +78,27 @@ We recently executed an extensive, end-to-end upgrade of Zenith to establish a t
 
 ## ✨ Primary Features Matrix
 
-```mermaid
-graph TD
-    A["Zenith Platform"] --> B["Enterprise App Client"]
-    A --> C["High-Performance Server"]
-    A --> D["Gemini AI Engine"]
-    
-    B --> B1["Next.js 15 App Router (React JS)"]
-    B --> B2["Zustand Stores & Themes"]
-    B --> B3["Socket.io Cursors & Typing"]
-    
-    C --> C1["Express & JWT Auth Router"]
-    C --> C2["Prisma Schema with Neon Postgres"]
-    C --> C3["Presence Rooms Synchronization"]
-    
-    D --> D1["Prompt-to-Tasks Wizard"]
-    D --> D2["AI Sprints Optimizer"]
-    D --> D3["Gemini Code Bug Solver"]
-    D --> D4["Workspace Chat Sidebar"]
-```
-
 ### 1. Unified Sessional Auth & RBAC
-- Secure JWT credential registers and cookie/header-based authorization.
-- Automatic personal workspace provisioning.
-- Precise Role-Based Access Controls: `OWNER`, `ADMIN`, `MEMBER`, and `VIEWER`.
+* Robust JWT token-based authentication with secure local/sessional memory hydration.
+* Automated onboarding layer that auto-provisions a personalized default tenant hub upon registration.
+* Granular Role-Based Access Control (RBAC) levels enforcing data mutations natively: `OWNER`, `ADMIN`, `MEMBER`, and `VIEWER`.
 
-### 2. High-Performance Kanban Board
-- Zero-latency card drag-and-drops across columns (`BACKLOG`, `TODO`, `IN_PROGRESS`, `IN_REVIEW`, `DONE`).
-- **Optimistic UI Updates** in Zustand stores reflect on-screen state modifications instantly.
-- Integrated task timers (Pomodoro clocks) logging deep focus focus metrics directly into the database.
+### 2. High-Velocity Board Engine
+* Zero-latency task allocation updates matching modern agile states: `BACKLOG`, `TODO`, `IN_PROGRESS`, `IN_REVIEW`, and `DONE`.
+* Optimized **Optimistic UI updates** within custom Zustand store slices instantly mirror coordinate modifications on screen before database persistence, resolving client lagging.
+* Native tracking clocks (Pomodoro timers) let developers log deep focus intervals seamlessly to PostgreSQL analytics schemas.
 
-### 3. Real-Time Collaboration Core
-- Presence engines track and render mouse cursors coordinates of all active workspace developers.
-- typing animations display indicators inside task comment boxes when teams are writing.
-- Instant, multi-client board layout updates via global Socket.io event triggers.
+### 3. Sockets Presence Core
+* Real-time multiplayer presence engine that broadcasts and tracks mouse cursor coordinates of connected developers within active project boards.
+* Asynchronous canvas synchronization streams status transitions and lane-order updates via centralized channel events instantly.
+* Automated "Ghost Connection" eviction handles abrupt user network failures by cleaning registries inside server sockets.
 
-### 4. 11 Gemini AI Suite Modules
-*   **Prompt-to-Tasks**: Converts descriptive natural language requests into structured checklists and tickets.
-*   **Sprint Planning Optimizer**: Analyzes backlog queues, estimates team capacities, and proposes optimized sprint allocations.
-*   **Meeting Summarizer**: Processes raw video or standup transcripts into actionable backlog tickets.
-*   **Risk Shield Detection**: Flags potential schedule bottlenecks, task overlaps, and capacity overloads.
-*   **AI Bug Solver**: Scans bug ticket logs, drafts possible root causes, and outputs proposed code solutions.
-*   **Workspace Chatbot Sidebar**: A persistent virtual teammate sidebar that answers queries regarding active tickets, workspace documents, and project details.
+### 4. 11 Context-Aware Gemini Models
+* **Prompt-to-Tasks**: Compiles text descriptions into full sprint tickets equipped with pre-populated subtasks and technical priorities.
+* **Sprint Planning Optimizer**: Iterates through pending cards, looks up estimated metrics, and suggests optimal development workloads based on live team member active workloads.
+* **Meeting Summarizer**: Takes raw text transcripts from engineering syncs and turns them into technical checklist backlogs.
+* **AI Bug Solver**: Examines issue context, reports deep structural root causes, and generates complete proposed source code repairs.
+* **Grounded Chatbot Companion**: Provides an integrated assistant that has workspace-wide text grounding, leveraging keyword relevance scoring (RAG) to scan active wiki documentation.
 
 ---
 
@@ -101,150 +106,208 @@ graph TD
 
 ```
 d:/Project_Management/
-├── frontend/                  # Next.js 15 App Router React JS (JS/JSX) Frontend client
+├── .github/                   # CI/CD Workflows
+│   └── workflows/
+│       └── ci.yml             # GitHub Actions CI compilation & build validator pipeline
+├── frontend/                  # Next.js 15 App Router React JS Client
 │   ├── src/
-│   │   ├── app/               # Workspace Pages, Calendars, Wikis, Sprints, Profile Settings (.jsx)
-│   │   ├── components/        # Glassmorphic layouts, buttons, modals (.jsx)
-│   │   ├── store/             # Zustand state managers (useAuthStore.js, useWorkspaceStore.js, useSocketStore.js)
-│   │   └── lib/               # Global utility scripts (.js)
-│   ├── jsconfig.json          # Next.js JavaScript directory path alias configurations
-│   ├── tailwind.config.js     # Custom animations, HSL themes, and gradients
+│   │   ├── app/               # Dashboard layouts, Calendars, Wikis, Sprints, Profile views (.jsx)
+│   │   ├── components/        # Glassmorphic shells, overlays, inputs, buttons (.jsx)
+│   │   ├── store/             # Zustand state slices (useAuthStore.js, useWorkspaceStore.js, useSocketStore.js)
+│   │   └── lib/               # Global utility scripts and client API mappings (.js)
+│   ├── jsconfig.json          # JavaScript absolute path directory mapping configurations
+│   ├── tailwind.config.js     # Custom animations, boxed box-shadows, HSL theme maps
+│   ├── Dockerfile             # Multi-stage production frontend container blueprint
 │   └── package.json
-└── backend/                   # Express TypeScript Sockets API Server
+└── backend/                   # Node.js Express TypeScript Engine Server
     ├── src/
-    │   ├── controllers/       # HTTP request parsers
-    │   ├── middlewares/       # Security filters (JWT validation, roles authentication)
-    │   ├── routes/            # Unified API endpoint schema mapper
-    │   ├── services/          # Google Gemini AI services wrapper
-    │   ├── sockets/           # Collaborative pointer & cursor synchronization
-    │   └── server.ts          # Server entrypoint file
+    │   ├── controllers/       # HTTP request handlers and payload managers
+    │   ├── middlewares/       # Core protection guards (JWT decryption, Proxy IP rate limits, schema Zod validators)
+    │   ├── routes/            # Central application gateway routing blueprint
+    │   ├── services/          # Google Gemini generative models logic, Resend emails, and Stripe billing
+    │   ├── sockets/           # Collaborative coordinates & room syncing socket handlers
+    │   └── server.ts          # Express application initialization entrypoint
     ├── prisma/
-    │   ├── schema.prisma      # Unified Prisma schemas (PostgreSQL / Neon compatible)
-    │   └── seed.ts            # RBAC Roles & developers database seed script
+    │   ├── schema.prisma      # Unified Prisma schema architecture (Neon Postgres)
+    │   └── seed.ts            # High-fidelity developer roles seeding database pipeline
+    ├── Dockerfile             # Multi-stage production backend container blueprint
     └── package.json
 ```
 
 ---
 
-## 🚀 Setting Up the Suite
+## 🚀 Installation & Local Execution
 
-### Method A: One-Click Docker Multicontainer Compose (Recommended)
-You can orchestrate the entire database, TypeScript backend, and React JS client environment instantly using Docker:
+### Option A: One-Click Multi-Container Orchestration (Docker Compose)
+
+A complete ecosystem including PostgreSQL, the TypeScript backend server, and the Next.js production client can be spun up instantly using optimized multi-stage builder-runner pipelines:
+
 ```bash
-# Launch database, backend API, and frontend client concurrently
+# Compile multi-stage builder environments and run detached service processes
 docker-compose up --build -d
 ```
-*   **Next.js Frontend Client**: `http://localhost:3000`
-*   **Express API Server**: `http://localhost:8000/api`
+
+* 🌐 **SaaS Frontend Web Application**: `http://localhost:3000` 
+* ⚡ **Express Core API Gateway Engine**: `http://localhost:8000/api` 
 
 ---
 
-### Method B: Manual Local Development Setup
+### Option B: Split Manual Execution Layer
 
-#### 1. Setup PostgreSQL Database
-Ensure you have a running PostgreSQL instance and provision a clean database (e.g. `zenith`).
+#### 1. Provision the Backend Engine Server
 
-#### 2. Configure & Start Express API Server
 ```bash
 cd backend
 npm install
 ```
 
-Create a `backend/.env` file:
+Create a standard local development environment configuration file at `backend/.env`:
+
 ```env
 PORT=8000
-DATABASE_URL="postgresql://postgres:YOUR_PASSWORD@localhost:5432/zenith?schema=public"
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/zenith?schema=public"
 JWT_SECRET="super-secret-zenith-jwt-key-2026-wow"
-GEMINI_API_KEY="YOUR_GOOGLE_GEMINI_API_KEY" # Optional: high-fidelity mock fallbacks included!
+GEMINI_API_KEY="YOUR_GOOGLE_GEMINI_API_KEY_HERE"
+RESEND_API_KEY="YOUR_RESEND_API_KEY_HERE"
+STRIPE_SECRET_KEY="YOUR_STRIPE_SECRET_KEY_HERE"
+STRIPE_WEBHOOK_SECRET="YOUR_STRIPE_WEBHOOK_SECRET_HERE"
 CORS_ORIGIN="http://localhost:3000"
 ```
 
-Sync PostgreSQL tables and seed starting workspace profiles:
+Sync database relational schemas and trigger the idempotent development seeding engine:
+
 ```bash
-# Run schema migration pushes
+# Push Prisma schema blueprints to active database instance
 npx prisma db push
 
-# Load sample workspaces, team members, backlog cards, and Wikis
+# Load standard organization tenants, checklist items, and markdown docs
 npm run seed
 ```
 
-Start the TypeScript development server:
+Boot the API development server environment:
+
 ```bash
 npm run dev
 ```
 
-#### 3. Configure & Start Next.js React JS Client
+#### 2. Provision the Next.js Frontend Client
+
 ```bash
 cd ../frontend
 npm install
 ```
 
-Start the Next.js App Router client in plain JavaScript dev mode:
+Create the public client build configuration template at `frontend/.env.local`:
+
+```env
+NEXT_PUBLIC_API_URL="http://localhost:8000/api"
+NEXT_PUBLIC_SOCKET_URL="http://localhost:8000"
+```
+
+Execute the application client compiler:
+
 ```bash
 npm run dev
 ```
-Open `http://localhost:3000` in your web browser.
+
+Open your browser and navigate to `http://localhost:3000`.
 
 ---
 
-## 🔐 Seeded Credentials for Quick Access
-Zenith's seed engine preloads workspace profiles to facilitate testing out of the box:
+## 🔐 Pre-Seeded Development Credentials
 
-*   **Lead Architect / Admin Session**:
-    *   **Email**: `lead@zenith.com`
-    *   **Password**: `password123`
-*   **Developer / Member Session**:
-    *   **Email**: `developer@zenith.com`
-    *   **Password**: `password123`
+Zenith's seeding engine handles rapid testing out of the box by preloading profiles with pre-mapped projects:
+
+*   **Lead Product Architect / Admin Guard**:
+    *   📧 **Email address**: `lead@zenith.com` 
+    *   🔑 **Password string**: `password123` 
+*   **Software Engineer / Team Member Profile**:
+    *   📧 **Email address**: `developer@zenith.com` 
+    *   🔑 **Password string**: `password123` 
 
 ---
 
-## 📝 Primary API Router Index
+## 📝 Centralized API Router Blueprint
 
 <details>
-<summary>🔑 Authentication Routes</summary>
+<summary>🔑 Authentication & Profiles</summary>
 
-| Method | Endpoint | Description |
-| :--- | :--- | :--- |
-| `POST` | `/api/auth/register` | Register profile & auto-provision default workspace |
-| `POST` | `/api/auth/login` | Log in and issue HTTP sessional JWT |
-| `PUT` | `/api/auth/profile` | Update profile information (Clerk-style details modal sync) |
+| Method | Endpoint | Functional Scope |
+| --- | --- | --- |
+| `POST` | `/api/auth/register` | Compiles profiles and provisions a unique default workspace |
+| `POST` | `/api/auth/login` | Validates credentials and returns sessional JWT signature keys |
+| `GET` | `/api/auth/me` | Fetches active identity scopes and sessional tenant mappings |
+| `PUT` | `/api/auth/profile` | Synchronizes user names, passwords, and custom avatar indicators |
 
 </details>
 
 <details>
-<summary>🏢 Workspace & Project Routes</summary>
+<summary>🏢 Workspace & Project Tenants</summary>
 
-| Method | Endpoint | Description |
-| :--- | :--- | :--- |
-| `POST` | `/api/workspaces` | Create dynamic organization tenant |
-| `GET` | `/api/workspaces/:workspaceId/stats` | Fetch real-time metrics & health indexes |
-| `POST` | `/api/projects` | Provision project scrum task board |
-| `PUT` | `/api/projects/:projectId` | Toggle project starring state |
+| Method | Endpoint | Functional Scope |
+| --- | --- | --- |
+| `POST` | `/api/workspaces` | Provisions an isolated company workspace space |
+| `GET` | `/api/workspaces` | Lists all workspaces linked to authenticated users |
+| `GET` | `/api/workspaces/:workspaceId/stats` | Aggregates project velocities and global completion metrics |
+| `POST` | `/api/workspaces/:workspaceId/invite` | Invites registered users to workspaces with background Resend HTML invites |
+| `DELETE` | `/api/workspaces/:workspaceId/members/:userId` | Revokes developer access keys from selected workspace nodes |
+| `POST` | `/api/projects` | Creates an independent board task array tracker |
+| `GET` | `/api/projects` | Fetches projects linked to active organization context parameters |
 
 </details>
 
 <details>
-<summary>📋 Task & Kanban Card Routes</summary>
+<summary>📋 Task & Kanban Card Operations</summary>
 
-| Method | Endpoint | Description |
-| :--- | :--- | :--- |
-| `POST` | `/api/tasks` | Create backlog cards with order sorting |
-| `PUT` | `/api/tasks/:taskId` | Save drag-and-drop column changes and coordinates |
-| `POST` | `/api/tasks/:taskId/comments` | Post comments inside chat streams |
-| `POST` | `/api/tasks/:taskId/timer` | Log Pomodoro deep focus session duration |
+| Method | Endpoint | Functional Scope |
+| --- | --- | --- |
+| `POST` | `/api/tasks` | Creates backlog item nodes populated with sorting indices, triggers assignee emails |
+| `PUT` | `/api/tasks/:taskId` | Commits status transitions, lane orders, and assignee updates |
+| `DELETE` | `/api/tasks/:taskId` | Purges task entries and cascade deletes matching checklist arrays |
+| `POST` | `/api/tasks/:taskId/subtasks` | Appends checklists to manage granular sprint objectives |
+| `POST` | `/api/tasks/:taskId/comments` | Posts textual remarks directly to active task discussion streams |
+| `POST` | `/api/tasks/:taskId/timer` | Saves logged task focus duration elements directly to database |
+
+</details>
+
+<details>
+<summary>📄 Document Wikis</summary>
+
+| Method | Endpoint | Functional Scope |
+| --- | --- | --- |
+| `POST` | `/api/documents` | Provisions markdown documents and wiki pages in the workspace |
+| `GET` | `/api/documents` | Lists all documents linked to workspace contexts |
+| `GET` | `/api/documents/:documentId` | Fetches full markdown document details |
+| `PUT` | `/api/documents/:documentId` | Updates markdown documentation titles and content |
+| `DELETE` | `/api/documents/:documentId` | Purges documents from the workspace database |
 
 </details>
 
 <details>
 <summary>🧠 Google Gemini AI Services</summary>
 
-| Method | Endpoint | Description |
-| :--- | :--- | :--- |
-| `POST` | `/api/ai/optimize-sprint` | Run Sprint capacity Optimizer planner |
-| `POST` | `/api/ai/solve-bug` | Suggest bug proposed root-causes and actual code fixes |
-| `POST` | `/api/ai/smart-assign` | Suggest optimal developer assignee for task tags |
-| `POST` | `/api/ai/chatbot` | Conversational interface with context-aware workspace memory |
+| Method | Endpoint | Functional Scope |
+| --- | --- | --- |
+| `POST` | `/api/ai/generate-tasks` | Evaluates natural language input to assemble ticket backlogs |
+| `POST` | `/api/ai/optimize-sprint` | Evaluates current workloads and backlog counts to organize sprints |
+| `GET` | `/api/ai/project-summary/:projectId` | Compiles milestone results and evaluates potential blocks |
+| `POST` | `/api/ai/summarize-meeting` | Scans text notes to build clear developer requirements checklists |
+| `GET` | `/api/ai/workspace-risks/:workspaceId` | Monitors system timelines to flag overload risks |
+| `POST` | `/api/ai/solve-bug` | Suggests root-causes and provides formatted code modifications |
+| `POST` | `/api/ai/smart-assign` | Suggests optimal candidate assignees for custom ticket tags |
+| `GET` | `/api/ai/daily-standup` | Assembles text summaries tracking daily development updates |
+| `POST` | `/api/ai/chatbot` | Grounded digital coworker using RAG document rankings |
+
+</details>
+
+<details>
+<summary>💳 Monetization & Subscriptions (Stripe)</summary>
+
+| Method | Endpoint | Functional Scope |
+| --- | --- | --- |
+| `POST` | `/api/billing/checkout` | Initiates safe Stripe Checkout portal sessions for workspace upgrades |
+| `GET` | `/api/billing/mock-success` | Sandbox portal to test billing successes and upgrade tiers in development |
+| `POST` | `/api/billing/webhook` | Receiver endpoint that captures Stripe subscription completed events |
 
 </details>
 
