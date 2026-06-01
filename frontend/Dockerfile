@@ -1,16 +1,13 @@
-# Use official Node.js runtime as parent image
-FROM node:20-alpine
+# ==========================================
+# STAGE 1: Builder
+# ==========================================
+FROM node:20-alpine AS builder
 
-# Set working directory inside container
 WORKDIR /usr/src/app
 
-# Copy package descriptors
 COPY package*.json ./
-
-# Install packages
 RUN npm install --legacy-peer-deps
 
-# Copy application source files
 COPY . .
 
 # Add build arguments for Next.js build-time environment variables
@@ -23,7 +20,22 @@ ENV NEXT_PUBLIC_SOCKET_URL=$NEXT_PUBLIC_SOCKET_URL
 # Build Next.js application
 RUN npm run build
 
-# Expose Next.js port
+# ==========================================
+# STAGE 2: Runner
+# ==========================================
+FROM node:20-alpine AS runner
+
+WORKDIR /usr/src/app
+
+ENV NODE_ENV=production
+
+COPY package*.json ./
+COPY public ./public
+COPY --from=builder /usr/src/app/.next ./.next
+
+# Install production dependencies only
+RUN npm install --only=production --legacy-peer-deps
+
 EXPOSE 3000
 
 # Start server listener
