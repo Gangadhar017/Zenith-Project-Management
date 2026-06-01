@@ -22,7 +22,8 @@ export class AIService {
   private static async executePrompt(prompt: string, fallbackJson: any): Promise<any> {
     if (hasApiKey && genAI) {
       try {
-        const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+        const modelName = process.env.GEMINI_MODEL || 'gemini-1.5-flash';
+        const model = genAI.getGenerativeModel({ model: modelName });
         const result = await model.generateContent(prompt);
         const text = result.response.text();
         
@@ -32,8 +33,20 @@ export class AIService {
           return JSON.parse(jsonMatch[0]);
         }
         return JSON.parse(text);
-      } catch (err) {
-        console.warn('Gemini execution failed or JSON parsing failed. Falling back to Mock service.', err);
+      } catch (err: any) {
+        const errMsg = err?.message || '';
+        if (
+          errMsg.includes('leaked') ||
+          errMsg.includes('API key not valid') ||
+          errMsg.includes('403') ||
+          errMsg.includes('404')
+        ) {
+          console.warn(
+            '⚠️ [Zenith AI Engine] Gemini API Key is disabled, leaked, or restricted. Falling back smoothly to local high-fidelity Mock AI service.'
+          );
+        } else {
+          console.warn('Gemini execution failed or JSON parsing failed. Falling back to Mock service.', err);
+        }
         return fallbackJson;
       }
     }
