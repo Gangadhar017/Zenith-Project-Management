@@ -1,11 +1,13 @@
 import { Server, Socket } from 'socket.io';
 
-interface UserCursor {
+interface UserConnection {
+  projectId: string;
   userId: string;
   name: string;
-  x: number;
-  y: number;
 }
+
+// Registry to track socket connection associations
+const activeConnections = new Map<string, UserConnection>();
 
 export const setupSocketHandlers = (io: Server) => {
   io.on('connection', (socket: Socket) => {
@@ -16,6 +18,9 @@ export const setupSocketHandlers = (io: Server) => {
       socket.join(projectId);
       console.log(`User ${name} joined project: ${projectId}`);
       
+      // Store association
+      activeConnections.set(socket.id, { projectId, userId, name });
+
       // Notify other members of user appearance
       socket.to(projectId).emit('user:joined', { userId, name, socketId: socket.id });
     });
@@ -24,6 +29,10 @@ export const setupSocketHandlers = (io: Server) => {
     socket.on('project:leave', ({ projectId, userId, name }) => {
       socket.leave(projectId);
       console.log(`User ${name} left project: ${projectId}`);
+      
+      // Remove association
+      activeConnections.delete(socket.id);
+
       socket.to(projectId).emit('user:left', { userId, name, socketId: socket.id });
     });
 
@@ -58,6 +67,18 @@ export const setupSocketHandlers = (io: Server) => {
 
     socket.on('disconnect', () => {
       console.log(`User disconnected: ${socket.id}`);
+      
+      const connection = activeConnections.get(socket.id);
+      if (connection) {
+        const { projectId, userId, name } = connection;
+        console.log(`Abrupt disconnect: Cleaning up user ${name} from project ${projectId}`);
+        
+        // Notify other members in the project room
+        socket.to(projectId).emit('user:left', { userId, name, socketId: socket.id });
+        
+        // Clear association
+        activeConnections.delete(socket.id);
+      }
     });
   });
 };

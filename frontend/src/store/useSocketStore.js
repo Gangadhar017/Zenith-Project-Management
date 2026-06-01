@@ -14,7 +14,13 @@ export const useSocketStore = create((set, get) => {
     initializeSocket: (projectId, userId, name) => {
       if (get().socket) return;
 
-      const socketInstance = io(SOCKET_BASE);
+      const socketInstance = io(SOCKET_BASE, {
+        reconnection: true,
+        reconnectionAttempts: 10,
+        reconnectionDelay: 1000,
+        reconnectionDelayMax: 5000,
+        timeout: 20000,
+      });
 
       socketInstance.on("connect", () => {
         console.log("Connected to socket engine:", socketInstance.id);
@@ -36,9 +42,14 @@ export const useSocketStore = create((set, get) => {
 
       // Handle other users leaving
       socketInstance.on("user:left", ({ userId: leftId }) => {
-        set((state) => ({
-          activeUsers: state.activeUsers.filter((u) => u.userId !== leftId),
-        }));
+        set((state) => {
+          const nextCursors = { ...state.userCursors };
+          delete nextCursors[leftId];
+          return {
+            activeUsers: state.activeUsers.filter((u) => u.userId !== leftId),
+            userCursors: nextCursors,
+          };
+        });
       });
 
       // Synchronize live drag-and-drop actions
