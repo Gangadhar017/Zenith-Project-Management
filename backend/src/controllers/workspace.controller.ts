@@ -1,6 +1,7 @@
 import { Response } from 'express';
 import { prisma } from '../lib/prisma';
 import { AuthRequest } from '../middlewares/auth.middleware';
+import { EmailService } from '../services/email.service';
 
 export const createWorkspace = async (req: AuthRequest, res: Response) => {
   try {
@@ -111,6 +112,18 @@ export const inviteMember = async (req: AuthRequest, res: Response) => {
       include: {
         user: true
       }
+    });
+
+    // Query workspace details to ground invite email context
+    prisma.workspace.findUnique({
+      where: { id: workspaceId },
+      select: { name: true }
+    }).then(ws => {
+      const workspaceName = ws?.name || 'Zenith Workspace';
+      const inviterName = req.user?.name || 'A teammate';
+      return EmailService.sendWorkspaceInvite(email, inviterName, workspaceName);
+    }).catch(err => {
+      console.error('Failed to dispatch async workspace invite email:', err);
     });
 
     return res.status(201).json(membership);

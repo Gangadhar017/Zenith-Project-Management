@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { prisma } from '../lib/prisma';
 import { AuthRequest } from '../middlewares/auth.middleware';
+import { EmailService } from '../services/email.service';
 
 export const createTask = async (req: AuthRequest, res: Response) => {
   try {
@@ -49,6 +50,30 @@ export const createTask = async (req: AuthRequest, res: Response) => {
         userId: req.user.id
       }
     });
+
+    // Send task assignment email notification asynchronously
+    if (assigneeId) {
+      prisma.user.findUnique({
+        where: { id: assigneeId },
+        select: { email: true, name: true }
+      }).then(assignee => {
+        if (assignee && assignee.email) {
+          prisma.project.findUnique({
+            where: { id: projectId },
+            select: { name: true }
+          }).then(proj => {
+            const projectName = proj?.name || 'Zenith Project';
+            return EmailService.sendTaskAssignment(
+              assignee.email,
+              assignee.name,
+              title,
+              projectName,
+              priority || 'MEDIUM'
+            );
+          }).catch(err => console.error('Failed to fetch project for async assign email:', err));
+        }
+      }).catch(err => console.error('Failed to fetch assignee for async assign email:', err));
+    }
 
     return res.status(201).json(task);
   } catch (err: any) {
@@ -103,6 +128,30 @@ export const updateTask = async (req: AuthRequest, res: Response) => {
           userId: req.user.id
         }
       });
+    }
+
+    // Send task assignment email notification asynchronously if assignee changed
+    if (assigneeId && assigneeId !== task.assigneeId) {
+      prisma.user.findUnique({
+        where: { id: assigneeId },
+        select: { email: true, name: true }
+      }).then(assignee => {
+        if (assignee && assignee.email) {
+          prisma.project.findUnique({
+            where: { id: task.projectId },
+            select: { name: true }
+          }).then(proj => {
+            const projectName = proj?.name || 'Zenith Project';
+            return EmailService.sendTaskAssignment(
+              assignee.email,
+              assignee.name,
+              title || task.title,
+              projectName,
+              priority || task.priority
+            );
+          }).catch(err => console.error('Failed to fetch project for async update assign email:', err));
+        }
+      }).catch(err => console.error('Failed to fetch assignee for async update assign email:', err));
     }
 
     return res.json(updated);
