@@ -21,14 +21,32 @@
 
 ---
 
-## 🚀 Recent Core Advancements
+## 🚀 Recent Core Advancements (The Architectural Upgrades)
 
-We recently rolled out key system-wide visual, architectural, and functional enhancements to Zenith:
+We recently executed an extensive, end-to-end upgrade of Zenith to establish a top-tier, enterprise-ready standard:
 
-*   **TypeScript to React JS (JavaScript/JSX) Migration**: Transformed the entire frontend React codebase from TypeScript (`.ts`/`.tsx`) to plain, high-performance **React JS (`.js`/`.jsx`)**. All types, interfaces, and static annotations were safely stripped while preserving 100% of formatting, absolute path imports (mapped via standard `jsconfig.json`), and features.
-*   **Reactive Class-Based Dark Mode theme**: Built a robust dark-theme first layout. The workspace store (`useAuthStore`) seamlessly caches user preference within local storage and defaults to a gorgeous dark zinc/indigo theme (`#09090b` carbon) for first-time visitors, completely eliminating visual contrast and white-on-white text bugs.
-*   **Fully Functional Autocomplete Workspace Search**: Upgraded the static command-palette mockup with a fully operational real-time search engine inside the top header. Pressing `⌘K` or `Ctrl+K` instantly focuses the bar, searching all Projects and Tasks in the active workspace and linking directly to target boards.
-*   **Breadcrumbs Navigation backlinks Reset**: Integrated direct State Purge controllers into the top-header breadcrumb list. Navigating back to the `Workspace` or the Workspace name breadcrumbs clears the project selector state dynamically, preventing stale project sub-headers on workspace-level pages like the Calendar, Wikis, or Team tables.
+*   **Phase 1: Database & Backend Optimization**:
+    *   **N+1 Query Resolution**: Parallelized database counts using `Promise.all` in controllers, accelerating API load speeds.
+    *   **Prisma Indices**: Configured highly selective `@index` parameters inside `schema.prisma` to accelerate query sorting.
+    *   **Zod Payload Validations**: Embedded bulletproof server-side input schema validation on all request controllers using an optimized custom middleware layer.
+*   **Phase 2: Sockets & Multiplayer Collaboration**:
+    *   **Ghost Connection Eviction**: Tracked active Socket rooms within `presence.ts` registries. Connection drops trigger automatic room cleanups, broadcasting exit alerts to active team members.
+    *   **Zombie Cursors Deletion**: Configured Zustand hooks on `user:left` events to instantly delete departees' mouse pointers from active boards.
+*   **Phase 3: RAG-Grounded Chatbot & Capacity-Aware Planner**:
+    *   **Keyword-Based RAG Context Grounding**: Upgraded `chatWithWorkspace` in `ai.service.ts` to rank workspace documents using keyword relevance (RAG filtering) to feed dense context previews to Gemini.
+    *   **Capacity-Aware Sprint Planning**: Re-engineered the Sprint Optimizer to fetch live developer workloads (active assigned tasks) directly from PostgreSQL to balance card assignments.
+*   **Phase 4: State Selector Tuning & Framer Motion Kanban Board**:
+    *   **Zustand Selector Tuning**: Wrapped destructured store hooks with `useShallow` from `zustand/react/shallow` inside layouts and dashboard views to isolate rendering cascades.
+    *   **Tactual Card Animations**: Swapped board cards with Framer Motion `<motion.div layout>` wrappers with spring transitions and tactile hover lift-up physics.
+*   **Phase 5: Multi-Stage DevOps & CI/CD Pipelines**:
+    *   **Double-Stage Docker Pipelines**: Split `backend/Dockerfile` and `frontend/Dockerfile` into intermediate `builder` and minimal production `runner` stages to shrink image footprints.
+    *   **GitHub Actions CI Workflow**: Set up a robust validation pipeline (`ci.yml`) triggering on pushes to `master`.
+*   **Phase 6: Transactional Emails (Resend SDK)**:
+    *   **Resend Transactional Integrations**: Designed dark-themed Notion-style invitations and Linear-style task assignment HTML templates, triggered asynchronously in the background inside Controllers.
+*   **Phase 7: Stripe Subscription Checkouts & Sandbox Portals**:
+    *   **Monetization Gateway**: Integrated Stripe checkouts and webhook handlers. Configured mock success sandbox loops (`/api/billing/mock-success`) to simulate webhook confirmations instantly in development.
+*   **Hardening Rate Limiter Security**:
+    *   **Reverse-Proxy IP Extraction**: Hardened custom rate limiters with secure parsing of `x-forwarded-for` to extract the true client IP and prevent bypass spoofing behind Cloudflare or ALB.
 
 ---
 
