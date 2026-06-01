@@ -28,8 +28,12 @@ export const useWorkspaceStore = create((set, get) => {
         const res = await fetch(`${API_BASE}/workspaces`, {
           headers: getHeaders(),
         });
-        const data = await res.json();
+        if (res.status === 401) {
+          useAuthStore.getState().clearAuth();
+          return;
+        }
         if (res.ok) {
+          const data = await res.json();
           set({ workspaces: data });
           if (data.length > 0 && !get().currentWorkspace) {
             const ws = data[0];

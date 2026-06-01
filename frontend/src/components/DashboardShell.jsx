@@ -43,6 +43,7 @@ export default function DashboardShell({ children }) {
     setHasMounted(true);
   }, []);
   const {
+    token,
     user,
     isAuthenticated,
     clearAuth,
@@ -252,12 +253,13 @@ export default function DashboardShell({ children }) {
   // hasMounted guard prevents acting on stale SSR state before localStorage is read
   useEffect(() => {
     if (!hasMounted) return;
-    if (!isAuthenticated) {
+    if (!isAuthenticated || !user || !token) {
+      clearAuth();
       router.replace("/login");
     } else {
       fetchWorkspaces();
     }
-  }, [hasMounted, isAuthenticated, router, fetchWorkspaces]);
+  }, [hasMounted, isAuthenticated, user, token, router, fetchWorkspaces, clearAuth]);
 
   // Show a minimal spinner until the client has hydrated and auth state is confirmed.
   // Using router.replace (not push) avoids adding the broken dashboard to browser history.
