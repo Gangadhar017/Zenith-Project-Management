@@ -233,5 +233,5 @@ Zenith's seed engine preloads workspace profiles to facilitate testing out of th
 ---
 
 <div align="center">
-  <sub>Built with ❤️ by Silicon Valley Agile Engineers. Powered by Google Gemini.</sub>
+  <sub>Built with ❤️ by Gangadhar. Powered by Google Gemini.</sub>
 </div>
