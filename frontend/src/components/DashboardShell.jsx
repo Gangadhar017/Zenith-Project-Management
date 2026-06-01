@@ -36,6 +36,12 @@ import {
 export default function DashboardShell({ children }) {
   const router = useRouter();
   const pathname = usePathname();
+  const [hasMounted, setHasMounted] = useState(false);
+
+  // Mark as mounted after first client render (localStorage is available)
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
   const {
     user,
     isAuthenticated,
@@ -243,22 +249,26 @@ export default function DashboardShell({ children }) {
   const [newProjDesc, setNewProjDesc] = useState("");
 
   // Authentication check + workspace fetch
+  // hasMounted guard prevents acting on stale SSR state before localStorage is read
   useEffect(() => {
+    if (!hasMounted) return;
     if (!isAuthenticated) {
-      router.push("/login");
+      router.replace("/login");
     } else {
       fetchWorkspaces();
     }
-  }, [isAuthenticated, router, fetchWorkspaces]);
+  }, [hasMounted, isAuthenticated, router, fetchWorkspaces]);
 
-  if (!isAuthenticated || !user) {
+  // Show a minimal spinner until the client has hydrated and auth state is confirmed.
+  // Using router.replace (not push) avoids adding the broken dashboard to browser history.
+  if (!hasMounted || !isAuthenticated || !user) {
     return (
       <div className="min-h-screen bg-zinc-950 flex flex-col items-center justify-center text-zinc-400 gap-4">
         <div className="h-10 w-10 rounded-xl bg-zenith-glow p-0.5 animate-bounce">
           <Layers className="h-9 w-9 text-white" />
         </div>
         <span className="text-sm font-medium tracking-wide">
-          Syncing secure token credentials...
+          {hasMounted && !isAuthenticated ? "Redirecting to login..." : "Syncing secure token credentials..."}
         </span>
       </div>
     );
@@ -465,7 +475,7 @@ export default function DashboardShell({ children }) {
           <button
             onClick={() => {
               clearAuth();
-              router.push("/login");
+              router.replace("/login");
             }}
             className="w-full flex items-center justify-center gap-2 text-xs font-medium text-red-400 hover:text-red-300 hover:bg-red-500/10 p-2.5 rounded-lg transition border border-transparent hover:border-red-500/20"
           >
