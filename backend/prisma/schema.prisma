@@ -95,6 +95,7 @@ model Membership {
   updatedAt   DateTime  @updatedAt
 
   @@unique([userId, workspaceId])
+  @@index([workspaceId])
 }
 
 model Project {
@@ -115,6 +116,8 @@ model Project {
   activities  Activity[]
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
+
+  @@index([workspaceId])
 }
 
 model Sprint {
@@ -128,6 +131,8 @@ model Sprint {
   tasks     Task[]
   createdAt DateTime     @default(now())
   updatedAt DateTime     @updatedAt
+
+  @@index([projectId])
 }
 
 model Task {
@@ -155,6 +160,10 @@ model Task {
   activities  Activity[]
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
+
+  @@index([projectId])
+  @@index([sprintId])
+  @@index([assigneeId])
 }
 
 model Subtask {
@@ -165,6 +174,8 @@ model Subtask {
   task        Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
+  @@index([taskId])
 }
 
 model Comment {
@@ -175,6 +186,8 @@ model Comment {
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
+
+  @@index([taskId])
 }
 
 model Attachment {

@@ -159,20 +159,17 @@ export const getWorkspaceStats = async (req: AuthRequest, res: Response) => {
   try {
     const { workspaceId } = req.params;
 
-    const projectsCount = await prisma.project.count({ where: { workspaceId } });
-    
-    const tasksCount = await prisma.task.count({
-      where: { project: { workspaceId } }
-    });
-
-    const completedTasksCount = await prisma.task.count({
-      where: {
-        project: { workspaceId },
-        status: 'DONE'
-      }
-    });
-
-    const teamCount = await prisma.membership.count({ where: { workspaceId } });
+    const [projectsCount, tasksCount, completedTasksCount, teamCount] = await Promise.all([
+      prisma.project.count({ where: { workspaceId } }),
+      prisma.task.count({ where: { project: { workspaceId } } }),
+      prisma.task.count({
+        where: {
+          project: { workspaceId },
+          status: 'DONE'
+        }
+      }),
+      prisma.membership.count({ where: { workspaceId } })
+    ]);
 
     return res.json({
       projects: projectsCount,

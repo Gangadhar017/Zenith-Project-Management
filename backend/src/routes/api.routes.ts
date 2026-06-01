@@ -1,6 +1,9 @@
 import { Router } from 'express';
 import { authenticateToken } from '../middlewares/auth.middleware';
 import { rateLimiter } from '../middlewares/rate-limit.middleware';
+import { validateRequest } from '../middlewares/validation.middleware';
+import { registerSchema, loginSchema } from '../schemas/auth.schema';
+import { createWorkspaceSchema, inviteMemberSchema } from '../schemas/workspace.schema';
 import * as authCtrl from '../controllers/auth.controller';
 import * as wsCtrl from '../controllers/workspace.controller';
 import * as projCtrl from '../controllers/project.controller';
@@ -17,18 +20,18 @@ const aiLimiter = rateLimiter(20, 60 * 1000, 'artificial-intelligence');
 // ==========================================
 // AUTH & USERS
 // ==========================================
-router.post('/auth/register', authLimiter, authCtrl.register);
-router.post('/auth/login', authLimiter, authCtrl.login);
+router.post('/auth/register', authLimiter, validateRequest(registerSchema), authCtrl.register);
+router.post('/auth/login', authLimiter, validateRequest(loginSchema), authCtrl.login);
 router.get('/auth/me', authenticateToken, authCtrl.getProfile);
 router.put('/auth/profile', authenticateToken, authCtrl.updateProfile);
 
 // ==========================================
 // WORKSPACES
 // ==========================================
-router.post('/workspaces', authenticateToken, wsCtrl.createWorkspace);
+router.post('/workspaces', authenticateToken, validateRequest(createWorkspaceSchema), wsCtrl.createWorkspace);
 router.get('/workspaces', authenticateToken, wsCtrl.listWorkspaces);
 router.get('/workspaces/:workspaceId/stats', authenticateToken, wsCtrl.getWorkspaceStats);
-router.post('/workspaces/:workspaceId/invite', authenticateToken, wsCtrl.inviteMember);
+router.post('/workspaces/:workspaceId/invite', authenticateToken, validateRequest(inviteMemberSchema), wsCtrl.inviteMember);
 router.delete('/workspaces/:workspaceId/members/:userId', authenticateToken, wsCtrl.removeMember);
 
 // ==========================================
