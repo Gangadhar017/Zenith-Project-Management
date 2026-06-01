@@ -12,6 +12,14 @@ if (hasApiKey) {
   }
 }
 
+const fromDomain = process.env.EMAIL_FROM_DOMAIN || 'resend.dev';
+const isSandbox = fromDomain === 'resend.dev';
+
+const getFromAddress = (name: string, type: 'security' | 'tasks' | 'collab') => {
+  const prefix = isSandbox ? 'onboarding' : type;
+  return `${name} <${prefix}@${fromDomain}>`;
+};
+
 export class EmailService {
   /**
    * Send a beautiful, responsive HTML workspace invite email
@@ -122,7 +130,7 @@ export class EmailService {
     if (hasApiKey && resend) {
       try {
         await resend.emails.send({
-          from: 'Zenith PM <onboarding@resend.dev>',
+          from: getFromAddress('Zenith PM', 'collab'),
           to,
           subject: `${inviterName} invited you to the "${workspaceName}" workspace on Zenith`,
           html: htmlContent
@@ -317,7 +325,7 @@ export class EmailService {
     if (hasApiKey && resend) {
       try {
         await resend.emails.send({
-          from: 'Zenith Tasks <onboarding@resend.dev>',
+          from: getFromAddress('Zenith Tasks', 'tasks'),
           to,
           subject: `[Zenith] New Task Assigned: "${taskTitle}"`,
           html: htmlContent
@@ -449,7 +457,7 @@ export class EmailService {
     if (hasApiKey && resend) {
       try {
         await resend.emails.send({
-          from: 'Zenith Security <onboarding@resend.dev>',
+          from: getFromAddress('Zenith Security', 'security'),
           to: email,
           subject: `${otpCode} is your Zenith verification code`,
           html: htmlContent
@@ -580,7 +588,7 @@ export class EmailService {
     if (hasApiKey && resend) {
       try {
         await resend.emails.send({
-          from: 'Zenith Security <onboarding@resend.dev>',
+          from: getFromAddress('Zenith Security', 'security'),
           to: email,
           subject: `Reset your Zenith password`,
           html: htmlContent
